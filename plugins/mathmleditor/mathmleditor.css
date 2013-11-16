@@ -1,0 +1,26 @@
+.mathmleditor {
+	padding: 2px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	display: inline-block;
+}
+
+/* ckeditor workarounds */
+
+.cke_reset_all .mathmleditor-dialog * {
+    vertical-align: bottom;
+    border-collapse: separate;
+
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+
+    font-family: sans-serif;
+    font-size: inherit;
+}
+
+.cke_reset_all .mathmleditor-dialog button {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}

@@ -1,0 +1,47 @@
+CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
+    var wirisEditor;
+
+    return {
+		title: 'Math Editor',
+		minWidth: 400,
+		minHeight: 300,
+
+		contents: [
+			{
+				id: 'tab-mathml',
+				label: 'MathML',
+				elements: [
+					{
+						type: 'html',
+						html: '<div class="mathmleditor-dialog" />',
+						onLoad: function (a) {
+							var $this = $('#' + this.domId);
+
+							// ckeditor workarounds
+							$this.parents('div[role="tabpanel"]').css('height', '100%');
+							$this.parents('table').first().css('height', '100%');
+							$this.css('height', '100%');
+
+							wirisEditor = com.wiris.jsEditor.JsEditor.newInstance({'language': 'en'});
+							wirisEditor.insertInto($this[0]);
+						},
+						// When setting up this field, set its value from widget data.
+						setup: function (widget) {
+							wirisEditor.setMathML(widget.data.mathML == '' ?
+												  '<math xmlns=\"http://www.w3.org/1998/Math/MathML\" />' :
+												  widget.data.mathML);
+						},
+						// When committing (saving) this field, set its value to the widget data.
+						commit: function (widget) {
+							widget.setData('mathML', wirisEditor.getMathML());
+						}
+					}
+				]
+			}
+		]
+    };
+});
+
+// Local Variables:
+// tab-width: 4
+// End:
