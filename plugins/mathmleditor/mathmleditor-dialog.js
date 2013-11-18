@@ -1,5 +1,21 @@
 CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
     var wirisEditor;
+	var wirisCodeLoadAjax = null;
+
+	function loadWirisCode(done) {
+		if ('com' in window && 'wiris' in window.com)
+			// wiris code is already loaded.
+			done();
+		else {
+			// Load wiris code.
+			if (wirisCodeLoadAjax == null)
+				wirisCodeLoadAjax = $.getScript("http://www.wiris.net/demo/editor/editor");
+			wirisCodeLoadAjax.done(function () {
+				wirisCodeLoadAjax = null;
+				done();
+			});
+		}
+	}
 
     return {
 		title: 'Math Editor',
@@ -10,6 +26,7 @@ CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
 			{
 				id: 'tab-mathml',
 				label: 'MathML',
+				title: 'MathML',
 				elements: [
 					{
 						type: 'html',
@@ -22,14 +39,19 @@ CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
 							$this.parents('table').first().css('height', '100%');
 							$this.css('height', '100%');
 
-							wirisEditor = com.wiris.jsEditor.JsEditor.newInstance({'language': 'en'});
-							wirisEditor.insertInto($this[0]);
+							loadWirisCode(function () {
+								wirisEditor = com.wiris.jsEditor.JsEditor.newInstance({'language': 'en'});
+								wirisEditor.insertInto($this[0]);
+							});
+
 						},
 						// When setting up this field, set its value from widget data.
 						setup: function (widget) {
-							wirisEditor.setMathML(widget.data.mathML == '' ?
-												  '<math xmlns=\"http://www.w3.org/1998/Math/MathML\" />' :
-												  widget.data.mathML);
+							loadWirisCode(function () {
+								wirisEditor.setMathML(widget.data.mathML == '' ?
+													  '<math xmlns=\"http://www.w3.org/1998/Math/MathML\" />' :
+													  widget.data.mathML);
+							});
 						},
 						// When committing (saving) this field, set its value to the widget data.
 						commit: function (widget) {
