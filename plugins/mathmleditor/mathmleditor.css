@@ -3,6 +3,18 @@
 	margin: 2px;
 	border: 1px solid #ccc;
 	display: inline-block;
+	min-width: 44px;
+}
+
+.mathmleditor-label {
+	font-size: x-small;
+	display: inline-block;
+	position: absolute;
+	color: white;
+	background-color: #fa6;
+	left: 5px;
+	right: 5px;
+	padding-left: 2px;
 }
 
 /* ckeditor workarounds */

@@ -1,4 +1,5 @@
 // Register the plugin within the editor.
+
 CKEDITOR.plugins.add('mathmleditor', {
 	// This plugin requires the Widgets System defined in the 'widget' plugin.
 	requires: 'widget',
@@ -10,8 +11,11 @@ CKEDITOR.plugins.add('mathmleditor', {
 	// The plugin initialization logic goes inside this method.
 	init: function (editor) {
 		// Load our CSS
-		var cssLink = $("<link rel='stylesheet' type='text/css' href='" + this.path + "mathmleditor.css'>");
-		$("head").append(cssLink); 
+		var href = this.path + "mathmleditor.css";
+		if ($('link[href="' + href + '"]').length == 0) {
+			var cssLink = $("<link rel='stylesheet' type='text/css' href='" + href + "'>");
+			$("head").append(cssLink); 
+		}
 
 		// Register the editing dialog.
 		CKEDITOR.dialog.add('mathmleditor-dialog', this.path + 'mathmleditor-dialog.js');
@@ -22,7 +26,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// Read more about the Advanced Content Filter here:
 			// * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
 			// * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-			allowedContent: 'span(!mathmleditor);',
+			allowedContent: 'span(!mathmleditor); span(!mathmleditor-label); br; span(!mathmleditor-content);',
 
 			// Minimum HTML which is required by this widget to work.
 			requiredContent: 'span(mathmleditor)',
@@ -30,9 +34,16 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// Define nested editable areas.
 			editables: { },
 
-			// Define the template of a new pm_mathml widget.
-			// The template will be used when creating new instances of the pm_mathml widget.
-			template: '<span class="mathmleditor" />',
+			// Define the template of a new mathmleditor widget.
+			// The template will be used when creating new instances of the mathmleditor widget.
+			template:
+			'<span class="mathmleditor">' +
+				'<span class="mathmleditor-label">MathML</span>' +
+				'<br />' +
+				'<span class="mathmleditor-content">' +
+					'<math xmlns="http://www.w3.org/1998/Math/MathML"></math>' +
+				'</span>' +
+			'</span>',
 
 			// Define the label for a widget toolbar button which will be automatically
 			// created by the Widgets System. This button will insert a new widget instance
@@ -40,7 +51,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// (see second part of this tutorial to learn about editing widgets).
 			//
 			// Note: In order to be able to translate your widget you should use the
-			// editor.lang.pm_mathml.* property. A string was used directly here to simplify this tutorial.
+			// editor.lang.mathmleditor.* property. A string was used directly here to simplify this tutorial.
 			button: 'Typeset mathematics',
 
 			// Set the widget dialog window name. This enables the automatic widget-dialog binding.
@@ -61,7 +72,8 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// When a widget is being initialized, we need to read the data
 			// from DOM and set it by using the widget.setData() method.
 			init: function() {
-				this.setData('mathML', $(this.element.$).html());
+				var mathML = $('<div>').append($(this.element.$).find('math').clone());
+				this.setData('mathML', mathML.html());
 			},
 
 			// Listen on the widget#data event which is fired
@@ -71,9 +83,9 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// window.
 			data: function() {
 				if (this.data && this.data.mathML) {
-					var mathMLContainer = $(this.element.$);
-					mathMLContainer.html(this.data.mathML);
-					typesetMath(mathMLContainer);
+					var mathMLContent = $(this.element.$).find(' > .mathmleditor-content');
+					mathMLContent.html(this.data.mathML);
+					typesetMath(mathMLContent);
 				}
 			}
 		});
@@ -87,12 +99,13 @@ CKEDITOR.plugins.add('mathmleditor', {
 
 			var dataValueObj = $('<div>' + e.data.dataValue + '</div>'); // Wraps to get a new root <div>
 			var mathTags = dataValueObj.find('math');
-			mathTags.wrap($('<span class="mathmleditor">'));
+			mathTags.wrap($('<span class="mathmleditor"><span class="mathmleditor-content"></span></span>'));
+			mathTags.parent().parent().prepend($('<span class="mathmleditor-label">MathML</span><br />'));
 			e.data.dataValue = dataValueObj.html(); // Drops the new root <div>
 
 			if (mathTags.length > 0)
 				this.once('dataReady', function(e) {
-					typesetMath($(this.element.$));
+					typesetMath($(this.container.$));
 				});
 
 			return true;
@@ -106,7 +119,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 			//
 
 			var dataValueObj = $('<div>' + e.data.dataValue + '</div>'); // Wraps to get a new root <div>
-			dataValueObj.find('.mathmleditor > script[type="math/mml"]').each(function () { $(this).parent().replaceWith($(this).text()) });
+			dataValueObj.find('.mathmleditor > .mathmleditor-content > script[type="math/mml"]').each(function () { $(this).parent().parent().replaceWith($(this).text()) });
 			e.data.dataValue = dataValueObj.html(); // Drops the new root <div>
 
 			return true;
