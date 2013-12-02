@@ -1,0 +1,35 @@
+.embeddedresource {
+	padding: 2px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	min-width: 60px;
+}
+
+.embeddedresource-label {
+	font-size: x-small;
+	display: inline-block;
+	position: absolute;
+	color: white;
+	background-color: #8af;
+	left: 5px;
+	right: 5px;
+	padding-left: 2px;
+}
+
+.embeddedresource-label:after {
+	content: "Attachment"
+}
+
+.embeddedresource-content {
+	display: inline-block;
+	margin-top: 16px;
+}
+
+.embeddedresource-content:after {
+	content: "\200b"; /* zero-width space */
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
