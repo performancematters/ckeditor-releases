@@ -48,9 +48,9 @@ CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
 						// When setting up this field, set its value from widget data.
 						setup: function (widget) {
 							loadWirisCode(function () {
-								wirisEditor.setMathML(widget.data.mathML == '' ?
-													  '<math xmlns=\"http://www.w3.org/1998/Math/MathML\" />' :
-													  widget.data.mathML);
+								wirisEditor.setMathML('mathML' in widget.data && widget.data.mathML.length > 0 ?
+													  widget.data.mathML :
+													  '<math xmlns="http://www.w3.org/1998/Math/MathML" />');
 							});
 						},
 						// When committing (saving) this field, set its value to the widget data.

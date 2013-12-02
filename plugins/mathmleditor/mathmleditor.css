@@ -3,7 +3,7 @@
 	margin: 2px;
 	border: 1px solid #ccc;
 	display: inline-block;
-	min-width: 44px;
+	min-width: 40px;
 }
 
 .mathmleditor-label {
@@ -11,10 +11,19 @@
 	display: inline-block;
 	position: absolute;
 	color: white;
-	background-color: #fa6;
+	background-color: #eb9100;
 	left: 5px;
 	right: 5px;
 	padding-left: 2px;
+}
+
+.mathmleditor-label:after {
+	content: "MathML"
+}
+
+.mathmleditor-content {
+	display: inline-block;
+	margin-top: 16px;
 }
 
 /* ckeditor workarounds */
