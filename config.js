@@ -35,4 +35,9 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Make dialogs simpler.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+ 	// MP: If we use the widget plugin in any way, it is critical
+	// that we include it here early in the load sequence or its
+	// CSS will not get loaded.
+	config.extraPlugins = 'widget';
 };
