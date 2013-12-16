@@ -30,6 +30,27 @@
 	content: "\200b"; /* zero-width space */
 }
 
+/* ckeditor workarounds */
+
+.cke_reset_all .embeddedresource-dialog * {
+    vertical-align: bottom;
+    border-collapse: separate;
+
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+
+    font-family: sans-serif;
+    font-size: inherit;
+}
+
+.cke_reset_all .embeddedresource-dialog .ui-icon-search {
+	width: 16px;
+	height: 16px;
+	background-image: url(/sasam/assets/css/images/ui-icons_222222_256x240.png);
+	background-position: -160px -112px;
+}
+
 /* Local Variables: */
 /* tab-width: 4 */
 /* End: */

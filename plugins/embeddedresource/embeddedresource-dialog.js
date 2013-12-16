@@ -23,6 +23,29 @@ CKEDITOR.dialog.add('embeddedresource-dialog', function (editor) {
 						commit: function (widget) {
 							widget.setData('uri', this.getValue());
 						}
+					},
+					{
+						type: 'html',
+						html: '<div class="embeddedresource-dialog" />',
+						onLoad: function (a) {
+							//debugger;
+							var self = this;
+							var $this = $('#' + this.domId);
+							$this.resourceFinder({
+								select: function (id, fullpath) {
+									console.log('select!', id, fullpath);
+									self.getDialog().getContentElement('resource', 'name').setValue(fullpath);
+								}
+							});
+						},
+						// When setting up this field, set its value from widget data.
+						setup: function (widget) {
+							//debugger;
+						},
+						// When committing (saving) this field, set its value to the widget data.
+						commit: function (widget) {
+							//debugger;
+						}
 					}
 				]
 			}
