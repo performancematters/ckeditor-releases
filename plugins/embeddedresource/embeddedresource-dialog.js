@@ -11,7 +11,7 @@ CKEDITOR.dialog.add('embeddedresource-dialog', function (editor) {
 				title: 'Resource',
 				elements: [
 					{
-						id: 'name',
+						id: 'uri',
 						type: 'text',
 						style: 'width: 100%;',
 						label: 'Path',
@@ -25,6 +25,20 @@ CKEDITOR.dialog.add('embeddedresource-dialog', function (editor) {
 						}
 					},
 					{
+						id: 'type',
+						type: 'text',
+						style: 'width: 100%;',
+						label: 'Type',
+						'default': '',
+						required: true,
+						setup: function (widget) {
+							this.setValue(widget.data.type);
+						},
+						commit: function (widget) {
+							widget.setData('type', this.getValue());
+						}
+					},
+					{
 						type: 'html',
 						html: '<div class="embeddedresource-dialog" />',
 						onLoad: function (a) {
@@ -32,9 +46,10 @@ CKEDITOR.dialog.add('embeddedresource-dialog', function (editor) {
 							var self = this;
 							var $this = $('#' + this.domId);
 							$this.resourceFinder({
-								select: function (id, fullpath) {
-									console.log('select!', id, fullpath);
-									self.getDialog().getContentElement('resource', 'name').setValue(fullpath);
+								select: function (props) {
+									console.log('select!', props);
+									self.getDialog().getContentElement('resource', 'uri').setValue(props.fullpath);
+									self.getDialog().getContentElement('resource', 'type').setValue(props.mimetype);
 								}
 							});
 						},

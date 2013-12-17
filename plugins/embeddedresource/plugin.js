@@ -60,17 +60,18 @@ CKEDITOR.plugins.add('embeddedresource', {
 			// so it is not a real DOM element yet. This is caused by the fact that upcasting is performed
 			// during data processing which is done on DOM represented by JavaScript objects.
 			upcast: function(element, data) {
-				if (!(element.name == 'cke:object' && element.attributes.type == 'text/html'))
+				if (element.name != 'cke:object')
 					return false;
 
 				console.log('embeddedresource.upcast!');
 
 				data.uri = element.attributes.data || '';
+				data.type = element.attributes.type || '';
 
 				var label = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource-label' });
 
 				var content = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource-content' });
-				content.add(new CKEDITOR.htmlParser.text(data.uri || ''));
+				content.add(new CKEDITOR.htmlParser.text(data.uri + ' [' + data.type + ']'));
 
 				var outer = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource' });
 				element.replaceWith(outer);
@@ -82,7 +83,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 
 			downcast: function (element) {
 				// Use http://tools.ietf.org/html/rfc4151 ?
-				var objectElement = new CKEDITOR.htmlParser.element('object', { type: 'text/html', data: this.data.uri || '' });
+				var objectElement = new CKEDITOR.htmlParser.element('object', { type: this.data.type || '', data: this.data.uri || '' });
 				console.log('embeddedresource.downcast!', objectElement);
 				return objectElement;
 			},
@@ -103,11 +104,11 @@ CKEDITOR.plugins.add('embeddedresource', {
 			data: function () {
 				console.log('embeddedresource.data!', this.data);
 				var content = $(this.element.$).find('> .embeddedresource-content');
-					content.html(this.data.uri || '');
-				if (this.data && this.data.uri && this.data.uri.length > 0)
-					content.html(this.data.uri);
+				content.html(this.data.uri || '');
+				if (this.data && this.data.uri && this.data.uri.length > 0 && this.data.type && this.data.type.length > 0)
+					content.html(this.data.uri + ' [' + this.data.type + ']');
 				else
-					content.html('&nbsp'); // This is important. We see crazy bugs in ckeditor on getData() calls without this.
+					content.html('&nbsp;'); // This is important. We see crazy bugs in ckeditor on getData() calls without this.
 			}
 		});
 	}
