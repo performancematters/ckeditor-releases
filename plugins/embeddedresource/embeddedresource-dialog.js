@@ -47,7 +47,7 @@ CKEDITOR.dialog.add('embeddedresource-dialog', function (editor) {
 							var $this = $('#' + this.domId);
 							$this.resourceFinder({
 								select: function (props) {
-									console.log('select!', props);
+									//console.log('select!', props);
 									self.getDialog().getContentElement('resource', 'uri').setValue(props.fullpath);
 									self.getDialog().getContentElement('resource', 'type').setValue(props.mimetype);
 								}

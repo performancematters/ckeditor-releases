@@ -14,7 +14,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 		var href = this.path + "embeddedresource.css";
 		if ($('link[href="' + href + '"]').length == 0) {
 			var cssLink = $("<link rel='stylesheet' type='text/css' href='" + href + "'>");
-			$("head").append(cssLink); 
+			$("head").append(cssLink);
 		}
 
 		// Register the editing dialog.
@@ -63,7 +63,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 				if (element.name != 'cke:object')
 					return false;
 
-				console.log('embeddedresource.upcast!');
+				//console.log('embeddedresource.upcast!');
 
 				data.uri = element.attributes.data || '';
 				data.type = element.attributes.type || '';
@@ -84,12 +84,12 @@ CKEDITOR.plugins.add('embeddedresource', {
 			downcast: function (element) {
 				// Use http://tools.ietf.org/html/rfc4151 ?
 				var objectElement = new CKEDITOR.htmlParser.element('object', { type: this.data.type || '', data: this.data.uri || '' });
-				console.log('embeddedresource.downcast!', objectElement);
+				//console.log('embeddedresource.downcast!', objectElement);
 				return objectElement;
 			},
 
 			init: function () {
-				console.log('embeddedresource.init!');
+				//console.log('embeddedresource.init!');
 
 				// Repair widget if necessary. This happens on paste, probably a widget bug.
 				if (!$(this.element.$).is(':has(.embeddedresource-label)'))
@@ -102,7 +102,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 			// widget.setData() method, which we use in the dialog
 			// window.
 			data: function () {
-				console.log('embeddedresource.data!', this.data);
+				//console.log('embeddedresource.data!', this.data);
 				var content = $(this.element.$).find('> .embeddedresource-content');
 				content.html(this.data.uri || '');
 				if (this.data && this.data.uri && this.data.uri.length > 0 && this.data.type && this.data.type.length > 0)

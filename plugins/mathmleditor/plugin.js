@@ -14,7 +14,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 		var href = this.path + "mathmleditor.css";
 		if ($('link[href="' + href + '"]').length == 0) {
 			var cssLink = $("<link rel='stylesheet' type='text/css' href='" + href + "'>");
-			$("head").append(cssLink); 
+			$("head").append(cssLink);
 		}
 
 		// Register the editing dialog.
@@ -69,7 +69,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 				// <math>...</math> ==> <span class="mathmleditor">...</span>
 				//
 
-				console.log('mathmleditor.upcast!');
+				//console.log('mathmleditor.upcast!');
 
 				data.mathML = element.getOuterHtml();
 
@@ -98,12 +98,12 @@ CKEDITOR.plugins.add('mathmleditor', {
 				var mathML = this.data.mathML;
 				mathML = mathML.replace(/<math>/, '<math xmlns="http://www.w3.org/1998/Math/MathML">');
 				var result = new CKEDITOR.htmlParser.text(mathML);
-				console.log('mathmleditor.downcast!', result);
+				//console.log('mathmleditor.downcast!', result);
 				return result;
 			},
 
 			init: function () {
-				console.log('mathmleditor.init!');
+				//console.log('mathmleditor.init!');
 
 				// Repair widget if necessary. This happens on paste, probably a widget bug.
 				if (!$(this.element.$).is(':has(.mathmleditor-label)'))
@@ -116,7 +116,7 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// widget.setData() method, which we use in the dialog
 			// window.
 			data: function () {
-				console.log('mathmleditor.data!');
+				//console.log('mathmleditor.data!');
 				if (this.data && this.data.mathML) {
 					var mathMLContent = $(this.element.$).find('> .mathmleditor-content');
 					mathMLContent.html(this.data.mathML);
