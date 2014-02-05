@@ -8,6 +8,8 @@ CKEDITOR.editorConfig = function( config ) {
 	// For the complete reference:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
+	var contextRoot = (typeof ctx === 'undefined') ? "/sasam" : ctx;
+
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
@@ -41,4 +43,6 @@ CKEDITOR.editorConfig = function( config ) {
 	// CSS will not get loaded.
 	// SLC: This applies to the simpleuploads plugin, as well.
 	config.extraPlugins = 'widget,simpleuploads';
+
+	config.filebrowserUploadUrl = contextRoot + '/modules/resources/QtiUpload';
 };
