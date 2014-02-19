@@ -4,6 +4,8 @@
 		addFile	: 'Add a file',
 		// Tooltip for the "add image" toolbar button
 		addImage: 'Add an image',
+		// Tooltip for the "add image" toolbar button
+		addResource: 'Add a resource',		
 
 		// Shown after the data has been sent to the server and we're waiting for the response
 		processing: 'Processing...',

@@ -399,6 +399,164 @@ var addImageCmd = {
 	}
 };
 
+var addResourceCmd = {
+		exec: function( editor ) {
+
+			// Set the current itembank for configuring ckFinder.
+			var itembank = ($('#itemBankSelection').length > 0) ? $('#itemBankSelection').val() : '';
+			CKFinder.config.connectorInfo = 'itembank=' + itembank;
+			CKFinder.config.toolbar_Full = [['Refresh', 'Settings', 'Maximize']];
+
+	        var finder = new CKFinder();
+	        finder.width = 700;
+	        finder.language = 'en';
+
+			finder.callback = function( api, editor )
+			{
+				// Disable foleder context menu options
+				api.disableFolderContextMenuOption( 'CreateSubFolder', false );
+				api.disableFolderContextMenuOption( 'RenameFolder', false );
+				api.disableFolderContextMenuOption( 'DeleteFolder', false );
+				// Disable file context menu options
+				api.disableFileContextMenuOption( 'downloadFile', false );
+				api.disableFileContextMenuOption( 'viewFile', false );
+				api.disableFileContextMenuOption( 'deleteFile', false );
+				api.disableFileContextMenuOption( 'renameFile', false );
+
+				CKFinder.dialog.add( 'viewResourceDialog', function( api )
+				{
+					// Assemble the resource url for the object element in the popop dialog.
+					var resourceUrl = getResourceUrl(api.getSelectedFile().name, itembank);
+					// CKFinder.dialog.definition
+					var dialogDefinition =
+					{
+						title : 'Performance Matters Resource',
+						minWidth : 400,
+						minHeight : 400,
+						contents : [
+							{
+								id : 'viewResourceDialog',
+								label : '',
+								title : '',
+								expand : true,
+								padding : 0,
+								elements :
+								[
+									{
+										type : 'html',
+										html : '<object width="100%" height="100%" data="' + resourceUrl + '">'
+									}
+								]
+							}
+						],
+						buttons : [ ]
+					};
+
+					return dialogDefinition;
+				} );
+
+				api.addFileContextMenuOption( { label : "Add Resource", command : "addResource" } , function( api, file )
+				{
+					// Verify that the resource itembank is in sync w/ the metadata itembank.
+					if (verifyResourceItembank(itembank)) {
+						// Add a new object element to the CKEditor block that contains the new resource link.
+						var resourceUrl = getResourceUrl(file.name, itembank);
+						getResourceMimetype(resourceUrl, function(resourceMimetype) {
+							var currentCKEditor = getEditor();
+							var element = new CKEDITOR.dom.element( "object", currentCKEditor.document );
+							element.setAttribute("type", resourceMimetype);
+							// Use full path for URL; URL must be valid, otherwise ckeditor will reject this insertElement.
+							// Note: [/contextPath]/external/resource/(itembank)/(filePath) will work for item edit only - not preview.
+							// when the resource is utimately saved w/ the item only the filePath is used for the URL
+							// because the servlet GetQtiXmlForAssessmentItemServlet OLAPreview requires this format.
+							// qti-jquery-plugins will adjust the url before the item is saved or previewed, accordingly.
+							element.setAttribute("data", getBaseURL() + resourceUrl);
+							currentCKEditor.insertElement(element);
+						});
+					} else
+						alert( "This resource item bank is no longer available for this item." );
+					api.closePopup();
+				});
+
+				api.addFileContextMenuOption( { label : "View Resource", command : "viewResource" } , function( api, file )
+				{
+					// View the resource in a popup window w/in CKFinder
+					api.openDialog('viewResourceDialog');
+				});
+			};
+
+			// Make sure the current CKEditor is available to CKFinder addResource context menu option.
+			function getEditor() {
+				return editor;
+			}
+			finder.popup();	// Launch the ckfinder window
+		}
+	};
+
+/*
+* Verify that the ckFinder itembank matches the metadata itembank
+*
+* @param {String}  ckFinder itembank
+* @return {boolen} true, if itembanks are in sync
+*/
+function verifyResourceItembank(ckFinderItembank) {
+	var metadataItembank = ($('#itemBankSelection').length > 0) ? $('#itemBankSelection').val() : '';
+	return (metadataItembank == ckFinderItembank) ? true : false;
+}
+
+/*
+* Get the base URL used when creating a full URL path to a newly added resource.
+*
+* @param {String}  ckFinder itembank
+* @return {String} baseURL of protocol://hostname:port
+*/
+function getBaseURL() {
+   return location.protocol + "//" + location.hostname +
+      (location.port && ":" + location.port);
+}
+
+/*
+* Get relative url for the resource that includes the context path.
+* This url will be accessed via GetQtiXmlForAssessmentItemServlet
+*
+* @param {String}  ckfFilePath resource filePath
+* @param {String}  itembank
+* @return {String} resourceURL
+*/
+function getResourceUrl(ckfFilePath, itembank)
+{
+    var contextRoot = ((typeof ctx === 'undefined') ? "/sasam" : ctx);
+    var resourceFilePath = ckfFilePath.replace(/___/g, '/');
+    var resourceUrl = (contextRoot ? contextRoot : '') + "/external/resource/" + itembank + '/' + resourceFilePath;
+    return resourceUrl;
+}
+
+/*
+* Get mimetype of the resource by sending a HEAD request.
+*
+* @param {String}  resourceUrl
+* @param {String}  callback, send the mimetype to this function upon complete.
+* @return {String} mimetype
+*/
+function getResourceMimetype(resourceUrl, callback )
+{
+    var request;
+	var res = null;
+    request = $.ajax({
+              type: "HEAD",
+              url: resourceUrl,
+              success: function () {
+            	  res = true;
+              },
+             complete: function () {
+				if (res) {
+				  var contentType = request.getResponseHeader("Content-Type");
+				  var mimetype = (contentType.indexOf(';') > -1) ? contentType.substr(0, contentType.indexOf(';')) : contentType;
+				  callback(mimetype);
+				}
+             }
+           });
+}
 
 function hasFiles(e)
 {
@@ -787,6 +945,18 @@ CKEDITOR.plugins.add( "simpleuploads",
 			toolbar: 'insert',
 			allowedContent : 'img[!src,width,height];span[id](SimpleUploadsTmpWrapper);',
 			requiredContent : 'img[!src]'
+		});
+
+		// Resources
+		editor.addCommand( 'addResource', addResourceCmd);
+
+		editor.ui.addButton && editor.ui.addButton( 'addResource', {
+			label: editor.lang.simpleuploads.addResource,
+			command: 'addResource',
+			icon : this.path + 'icons/addresource.png',
+			toolbar: 'insert',
+			allowedContent : 'a[!href];span[id](SimpleUploadsTmpWrapper);',
+			requiredContent : 'a[!href]'
 		});
 
 
