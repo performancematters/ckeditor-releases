@@ -9,7 +9,7 @@ CKEDITOR.dialog.add('mathmleditor-dialog', function (editor) {
 		else {
 			// Load wiris code.
 			if (wirisCodeLoadAjax == null)
-				wirisCodeLoadAjax = $.getScript("http://www.wiris.net/demo/editor/editor");
+				wirisCodeLoadAjax = $.getScript(location.protocol + "//www.wiris.net/demo/editor/editor");
 			wirisCodeLoadAjax.done(function () {
 				wirisCodeLoadAjax = null;
 				done();
