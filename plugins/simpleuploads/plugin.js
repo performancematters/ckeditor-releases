@@ -411,6 +411,9 @@ var addResourceCmd = {
 	        finder.width = 700;
 	        finder.language = 'en';
 
+	        // CKFinder double click on selected file event function
+			finder.selectActionFunction = AddResourceToItem;
+
 			finder.callback = function( api, editor )
 			{
 				// Disable foleder context menu options
@@ -422,6 +425,7 @@ var addResourceCmd = {
 				api.disableFileContextMenuOption( 'viewFile', false );
 				api.disableFileContextMenuOption( 'deleteFile', false );
 				api.disableFileContextMenuOption( 'renameFile', false );
+				api.disableFileContextMenuOption( 'selectFile', false );
 
 				CKFinder.dialog.add( 'viewResourceDialog', function( api )
 				{
@@ -457,24 +461,7 @@ var addResourceCmd = {
 
 				api.addFileContextMenuOption( { label : "Add Resource", command : "addResource" } , function( api, file )
 				{
-					// Verify that the resource itembank is in sync w/ the metadata itembank.
-					if (verifyResourceItembank(itembank)) {
-						// Add a new object element to the CKEditor block that contains the new resource link.
-						var resourceUrl = getResourceUrl(file.name, itembank);
-						getResourceMimetype(resourceUrl, function(resourceMimetype) {
-							var currentCKEditor = getEditor();
-							var element = new CKEDITOR.dom.element( "object", currentCKEditor.document );
-							element.setAttribute("type", resourceMimetype);
-							// Use full path for URL; URL must be valid, otherwise ckeditor will reject this insertElement.
-							// Note: [/contextPath]/external/resource/(itembank)/(filePath) will work for item edit only - not preview.
-							// when the resource is utimately saved w/ the item only the filePath is used for the URL
-							// because the servlet GetQtiXmlForAssessmentItemServlet OLAPreview requires this format.
-							// qti-jquery-plugins will adjust the url before the item is saved or previewed, accordingly.
-							element.setAttribute("data", getBaseURL() + resourceUrl);
-							currentCKEditor.insertElement(element);
-						});
-					} else
-						alert( "This resource item bank is no longer available for this item." );
+					createResourceObject(file.name, itembank);
 					api.closePopup();
 				});
 
@@ -484,6 +471,36 @@ var addResourceCmd = {
 					api.openDialog('viewResourceDialog');
 				});
 			};
+
+			function AddResourceToItem( fileUrl, data )
+			{
+				var filePrefix = this.config.thumbsUrl.replace('/_thumbs/', '/files/');
+				var fileNameIdx = (fileUrl.indexOf(filePrefix) > -1) ?  + fileUrl.indexOf(filePrefix) + filePrefix.length : -1;
+				if (fileNameIdx > -1) {
+					createResourceObject (fileUrl.substring(fileNameIdx), itembank)
+				}
+			}
+
+			function createResourceObject (fileName, itembank) {
+				// Verify that the resource itembank is in sync w/ the metadata itembank.
+				if (verifyResourceItembank(itembank)) {
+					// Add a new object element to the CKEditor block that contains the new resource link.
+					var resourceUrl = getResourceUrl(fileName, itembank);
+					getResourceMimetype(resourceUrl, function(resourceMimetype) {
+						var currentCKEditor = getEditor();
+						var element = new CKEDITOR.dom.element( "object", currentCKEditor.document );
+						element.setAttribute("type", resourceMimetype);
+						// Use full path for URL; URL must be valid, otherwise ckeditor will reject this insertElement.
+						// Note: [/contextPath]/external/resource/(itembank)/(filePath) will work for item edit only - not preview.
+						// when the resource is utimately saved w/ the item only the filePath is used for the URL
+						// because the servlet GetQtiXmlForAssessmentItemServlet OLAPreview requires this format.
+						// qti-jquery-plugins will adjust the url before the item is saved or previewed, accordingly.
+						element.setAttribute("data", getBaseURL() + resourceUrl);
+						currentCKEditor.insertElement(element);
+					});
+				} else
+					alert( "This resource item bank is no longer available for this item." );
+			}
 
 			// Make sure the current CKEditor is available to CKFinder addResource context menu option.
 			function getEditor() {
