@@ -38,6 +38,9 @@
 
     font-family: sans-serif;
     font-size: inherit;
+
+	max-width: none;
+	max-height: none;
 }
 
 .cke_reset_all .mathmleditor-dialog button {
