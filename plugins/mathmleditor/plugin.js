@@ -120,11 +120,43 @@ CKEDITOR.plugins.add('mathmleditor', {
 				if (this.data && this.data.mathML) {
 					var mathMLContent = $(this.element.$).find('> .mathmleditor-content');
 					mathMLContent.html(this.data.mathML);
-					typesetMath(mathMLContent);
+					editor.plugins.mathmleditor.typesetMath(mathMLContent);
 				}
 			}
 		});
+	},
+	typesetMath: function ($a) {
+		$a.find('m\\:math').find('*').addBack().each(function () {
+			var self = $(this);
+			var tagName = self.prop("tagName").toLowerCase();
+			if (tagName.match(/^m:/)) {
+				var replacement = $(document.createElement(tagName.substr(2))).append(self.contents());
+				if (tagName == 'm:math')
+					replacement.attr('xmlns', "http://www.w3.org/1998/Math/MathML");
+				self.replaceWith(replacement);
+			}
+		});
+
+		if ($a.is(":has(math)")) {
+			var typesetMathAfterMathJaxIsLoaded = function () {
+				$a.find('math').parent().each(function () {
+					MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+				});
+			}
+
+			if ('MathJax' in window)
+				typesetMathAfterMathJaxIsLoaded();
+			else {
+				// The https URL is recommended by http://www.mathjax.org/resources/faqs/#problem-https
+				var mathjaxScript = (window.location.protocol == "https:" ?
+									 "https://c328740.ssl.cf1.rackcdn.com" :
+									 "http://cdn.mathjax.org") +
+					"/mathjax/2.2-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+				$.getScript(mathjaxScript).done(typesetMathAfterMathJaxIsLoaded);
+			}
+		}
 	}
+
 });
 
 // Local Variables:
