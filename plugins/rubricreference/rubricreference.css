@@ -1,0 +1,41 @@
+.rubricreference {
+	padding: 2px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	min-width: 50px;
+}
+
+.rubricreference-label {
+	font-size: x-small;
+	display: inline-block;
+	position: absolute;
+	color: white;
+	background-color: #e66;
+	left: 5px;
+	right: 5px;
+	padding-left: 2px;
+}
+
+.rubricreference-label:after {
+	content: "Rubric";
+}
+
+.rubricreference-description {
+	display: inline-block;
+	margin-top: 16px;
+}
+
+/* ckeditor workarounds */
+
+.cke_reset_all .rubricreference-dialog * {
+    white-space: normal;
+}
+
+.cke_reset_all .rubricreference-dialog th {
+    font-weight: bold;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
