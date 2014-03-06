@@ -23,6 +23,8 @@ CKEDITOR.dialog.add('rubricreference-dialog', function (editor) {
 							$this = $('#' + this.domId);
 
 							var dialog = this.getDialog();
+							var editor = dialog.getParentEditor();
+							var rubricDataSource = editor.config.rubricDataSource;
 
 							// ckeditor workarounds
 							$this.parents('div[role="tabpanel"]').css('height', '100%');
@@ -35,7 +37,8 @@ CKEDITOR.dialog.add('rubricreference-dialog', function (editor) {
 								},
 								commit: function () {
 									dialog.click('ok');
-								}
+								},
+								rubricDataSource: rubricDataSource
 							});
 
 							dialog.disableButton('ok');
