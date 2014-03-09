@@ -52,7 +52,7 @@ CKEDITOR.plugins.add('rubricreference', {
 			// This dialog window will be opened when creating a new widget or editing an existing one.
 			dialog: 'rubricreference-dialog',
 
-			pathName: 'span',
+			pathName: 'rubric',
 
 			// Check the elements that need to be converted to widgets.
 			//
@@ -63,9 +63,23 @@ CKEDITOR.plugins.add('rubricreference', {
 				if (element.name != 'span')
 					return false;
 
-				data.rubricid = element.attributes['data-rubricid'];
-				if (!data.rubricid)
+				var propString = element.attributes['label'];
+				if (!propString)
 					return false;
+
+				var rubricid = null;
+				var propList = propString.split(/,/);
+				for (var i=0; i<propList.length; ++i) {
+					var leftAndRight = propList[i].split(/=/);
+					if (leftAndRight.length == 2 && leftAndRight[0].trim() == 'rubricid') {
+						rubricid = leftAndRight[1].trim();
+						break;
+					}
+				}
+				if (!rubricid)
+					return false;
+
+				data.rubricid = rubricid;
 
 				//
 				// Wrap span[@data-rubricid] with rubricreference widgets.
@@ -92,7 +106,8 @@ CKEDITOR.plugins.add('rubricreference', {
 				// <span class="rubricreference">...</span> ==> <span data-rubricid="">...</span>
 				//
 
-				var spanElement = new CKEDITOR.htmlParser.element('span', { 'data-rubricid': this.data.rubricid });
+				var spanElement = new CKEDITOR.htmlParser.element('span', { 'label': "rubricid=" + this.data.rubricid });
+				spanElement.add(new CKEDITOR.htmlParser.text(this.data.rubricid));
 				//console.log('rubricreference.downcast!', spanElement);
 				return spanElement;
 			},
