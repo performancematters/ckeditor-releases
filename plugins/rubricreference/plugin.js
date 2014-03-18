@@ -26,10 +26,10 @@ CKEDITOR.plugins.add('rubricreference', {
 			// Read more about the Advanced Content Filter here:
 			// * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
 			// * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-			//allowedContent: 'span(!rubricreference); span(!rubricreference-label); br; span(!rubricreference-content);',
+			allowedContent: 'span[label]',
 
 			// Minimum HTML which is required by this widget to work.
-			//requiredContent: 'span(rubricreference)',
+			requiredContent: 'span[label]',
 
 			// Define the template of a new rubricreference widget.
 			// The template will be used when creating new instances of the rubricreference widget.
@@ -82,9 +82,9 @@ CKEDITOR.plugins.add('rubricreference', {
 				data.rubricid = rubricid;
 
 				//
-				// Wrap span[@data-rubricid] with rubricreference widgets.
+				// Transform span[@label] to a rubricreference widget.
 				//
-				// <span data-rubricid="...">...</span> ==> <span class="rubricreference">...</span>
+				// <span label="...">...</span> ==> <span class="rubricreference">...</span>
 				//
 
 				//console.log('rubricreference.upcast!');
@@ -101,9 +101,9 @@ CKEDITOR.plugins.add('rubricreference', {
 
 			downcast: function (element) {
 				//
-				// Unwrap rubricreference widgets leaving just the span inside.
+				// Transform a rubricreference widget to a span[@label].
 				//
-				// <span class="rubricreference">...</span> ==> <span data-rubricid="">...</span>
+				// <span class="rubricreference">...</span> ==> <span label="">...</span>
 				//
 
 				var spanElement = new CKEDITOR.htmlParser.element('span', { 'label': "rubricid=" + this.data.rubricid });
