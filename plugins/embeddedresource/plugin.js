@@ -26,10 +26,10 @@ CKEDITOR.plugins.add('embeddedresource', {
 			// Read more about the Advanced Content Filter here:
 			// * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
 			// * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-			//allowedContent: 'span(!embeddedresource); span(!embeddedresource-label); br; span(!embeddedresource-content);',
+			allowedContent: 'object[data,type]',
 
 			// Minimum HTML which is required by this widget to work.
-			//requiredContent: 'span(embeddedresource)',
+			requiredContent: 'object[data,type]',
 
 			// Define the template of a new embeddedresource widget.
 			// The template will be used when creating new instances of the embeddedresource widget.
