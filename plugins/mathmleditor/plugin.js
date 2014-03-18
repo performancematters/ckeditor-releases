@@ -26,10 +26,10 @@ CKEDITOR.plugins.add('mathmleditor', {
 			// Read more about the Advanced Content Filter here:
 			// * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
 			// * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-			//allowedContent: 'span(!mathmleditor); span(!mathmleditor-label); br; span(!mathmleditor-content);',
+			allowedContent: 'math;mrow;mi;mo;msup;mn;mfrac;mover;msqrt;msub',
 
 			// Minimum HTML which is required by this widget to work.
-			//requiredContent: 'span(mathmleditor)',
+			requiredContent: 'math',
 
 			// Define the template of a new mathmleditor widget.
 			// The template will be used when creating new instances of the mathmleditor widget.
