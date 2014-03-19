@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tutorial &mdash; Simple Box Widget; No jQuery</title>
+	<meta charset="utf-8">
+	<script src="../../../ckeditor.js"></script>
+    <script>
+        CKEDITOR.disableAutoInline = true;
+    </script>
+	<link href="../../../samples/sample.css" rel="stylesheet">
+    <link href="contents.css" rel="stylesheet">
+</head>
+<body>
+	<h1 class="samples">
+		Tutorial &mdash; Simple Box Widget,  No jQuery
+	</h1>
+
+	<textarea id="editor1" cols="10" rows="10">
+		<h1>Simple Box Sample - No jQuery</h1>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h2 class="simplebox-title">Title</h2>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+				<ul>
+					<li>Foo!</li>
+					<li>Bar!</li>
+				</ul>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris. Vivamus erat sem, egestas et lectus eget, varius cursus odio. Duis posuere lacus sit amet urna bibendum, id iaculis eros ultrices. Vestibulum a ultrices ante.</p>
+
+		<div class="simplebox align-center" style="width: 750px">
+			<h2 class="simplebox-title">Title</h2>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Ut eget ipsum a sapien porta ultrices. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus mi lacus, pharetra eu bibendum blandit, tristique sit amet leo. Integer eu nulla nec magna vulputate blandit. Praesent mattis quis ante eget adipiscing. Nulla vel tempus risus, in placerat velit. Mauris sed nibh at elit posuere laoreet. Morbi non sapien sed nunc fringilla imperdiet.</p>
+	</textarea>
+
+    <br />&nbsp;<br />
+	<div id="inline1" cols="10" rows="10" contenteditable="true" style="border:1px solid grey;background-color:#FFD8D8">
+		<h1>Simple Box Sample - No jQuery</h1>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h2 class="simplebox-title">Inline One</h2>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris. Vivamus erat sem, egestas et lectus eget, varius cursus odio. Duis posuere lacus sit amet urna bibendum, id iaculis eros ultrices. Vestibulum a ultrices ante.</p>
+
+
+		<div class="simplebox align-center" style="width: 750px">
+			<h2 class="simplebox-title">Inline Two</h2>
+			<div class="simplebox-content">
+				<p>Baz <strong>bar</strong>.</p>
+				<ul>
+					<li>Foo!</li>
+					<li>Bar!</li>
+				</ul>
+			</div>
+		</div>
+
+		<p>Ut eget ipsum a sapien porta ultrices. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus mi lacus, pharetra eu bibendum blandit, tristique sit amet leo. Integer eu nulla nec magna vulputate blandit. Praesent mattis quis ante eget adipiscing. Nulla vel tempus risus, in placerat velit. Mauris sed nibh at elit posuere laoreet. Morbi non sapien sed nunc fringilla imperdiet.</p>
+	</div>
+	<script>
+        CKEDITOR.inline( 'inline1', {
+            extraPlugins: 'simplebox,divarea',
+            scayt_autoStartup: true,
+            height: 500,
+            toolbarGroups: [
+                { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                { name: 'editing', groups: [ 'spellchecker' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                { name: 'document',	   groups: [ 'mode' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                { name: 'styles' },
+                { name: 'about' }
+            ],
+            removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+            uiColor: '#FFF000'
+        });
+	</script>
+	<script>
+            CKEDITOR.replace( 'editor1', {
+            extraPlugins: 'simplebox',
+            contentsCss: [
+                '../../../contents.css',
+                'contents.css'
+            ],
+            scayt_autoStartup: true,
+            height: 500,
+            toolbarGroups: [
+                { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                { name: 'editing', groups: [ 'spellchecker' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                { name: 'document',	   groups: [ 'mode' ] },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                { name: 'styles' },
+                { name: 'about' }
+            ],
+            removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+            uiColor: '#FFEBEB'
+        });
+	</script>
+</body>
+</html>
+

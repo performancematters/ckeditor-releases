@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tutorial &mdash; Simple Box Widget, Spell Check enabled for inline bug</title>
+	<meta charset="utf-8">
+	<script src="../../../ckeditor.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="../../../adapters/jquery.js"></script>
+    <script>
+        CKEDITOR.disableAutoInline = true;
+
+        $( document ).ready(function() {
+			$('#editor1').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: false,
+                height: 160,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#AADC6E'
+			});
+
+			$('#inline1').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: false,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+			});
+
+			$('#editor2').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: true,
+                height: 160,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#AADC6E'
+			});
+
+			$('#inline2').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: true,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#FFF000'
+			});
+        });
+    </script>
+    <style>
+        textarea#editor2 {
+            margin-top:20px;
+        }
+        div#inline1 {
+            border: 1px solid grey;
+            background-color:#E0FEC5;
+            height:150px;
+            margin:20px 0;
+        }
+        div#inline2 {
+            border: 1px solid grey;
+            background-color:#FFEBF5;
+            height:150px;
+        }
+    </style>
+	<link href="../../../samples/sample.css" rel="stylesheet">
+	<link href="contents.css" rel="stylesheet">
+</head>
+<body>
+	<textarea id="editor1" cols="10" rows="10">
+		<div class="simplebox align-left" style="width: 80%">
+			<h3 class="simplebox-title">Simple Box Sample CKEditor Classic, SCAYT disabled (scayt_autoStartup: false)</h3>
+			<div class="simplebox-content">
+				<p>Double clicking on simplebox handle successfully launches simplebox property popup.</p>
+			</div>
+		</div>
+	</textarea>
+
+	<div id="inline1" cols="10" rows="10" contenteditable="true">
+		<div class="simplebox align-left" style="width: 80%">
+			<h3 class="simplebox-title">Simple Box Sample CKEditor Inline, SCAYT disabled (scayt_autoStartup: false)</h3>
+			<div class="simplebox-content">
+				<p>Double clicking on simplebox handle successfully launches simplebox property popup.</p>
+			</div>
+		</div>
+	</div>
+
+	<textarea id="editor2" cols="10" rows="10">
+		<div class="simplebox align-left" style="width: 80%">
+			<h3 class="simplebox-title">Simple Box Sample CKEditor Classic, SCAYT enabled (scayt_autoStartup: true)</h3>
+			<div class="simplebox-content">
+				<p>Double clicking on simplebox handle successfully launches simplebox property popup.</p>
+			</div>
+		</div>
+
+
+	</textarea>
+
+    <br />&nbsp;<br />
+	<div id="inline2" cols="10" rows="10" contenteditable="true">
+		<div class="simplebox align-left" style="width: 80%">
+			<h3 class="simplebox-title">Simple Box Sample CKEditor Inline, SCAYT enabled (scayt_autoStartup: true)</h3>
+			<div class="simplebox-content">
+				<p>Double clicking on simplebox handle fails to launch property popup.</p>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+Bug Report
+- http://dev.ckeditor.com/wiki/Bugs
+- http://dev.ckeditor.com/wiki/TicketSpecs
+
+Descriptive summary - SCAYT enable for ckeditor inline causes problems with widgets.
+Steps to reproduce - I have provided a html file that demonstrates the bug.
+    This page shows four base ckeditor blocks:
+    1. Ckeditor classic with scayt disabled on startup. This works when doubleclicking on the simplebox widget handle in upper left corner of widget.
+    2. Ckeditor inline with scayt disabled on startup. This works when doubleclicking on the simplebox widget handle in upper left corner of widget.
+    3. Ckeditor classic with scayt enabled on startup. This works when doubleclicking on the simplebox widget handle in upper left corner of widget.
+    4. Ckeditor inline with scayt enabled on startup. This FAILS when doubleclicking on the simplebox widget handle in upper left corner of widget.
+
+Browser and OS - Lenovo laptop, Ubuntu (v 12.04), Chrome(v 33.0.1750.152) and Firefox(v 28.0)
+Screenshot - see 2014-03-19_ckeditor_inline_widget_scayt_bug.png
+Sample data - see 2014-03-19_ckeditor_inline_widget_scayt_bug.html
+Test case file - Using simplebox widget: https://github.com/ckeditor/ckeditor-docs-samples/commit/8793b94892aa7876156b01c32c59cdedc5b103b3
+Build configuration -https://github.com/ckeditor/ckeditor-releases/commit/944d690c3d79c21efe3fce42b2ca231b08c4c909

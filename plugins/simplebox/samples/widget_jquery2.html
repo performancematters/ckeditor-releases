@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tutorial &mdash; Simple Box Widget, Spell Check enabled for inline bug</title>
+	<meta charset="utf-8">
+	<script src="../../../ckeditor.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="../../../adapters/jquery.js"></script>
+    <script>
+        CKEDITOR.disableAutoInline = true;
+
+        $( document ).ready(function() {
+			$('#editor1').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: false,
+                height: 220,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#AADC6E'
+			});
+
+			$('#inline1').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: false,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+			});
+
+			$('#editor2').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: true,
+                height: 220,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#007FFF'
+			});
+
+			$('#inline2').ckeditor({
+                extraPlugins: 'simplebox',
+                contentsCss: [
+                    '../../../contents.css',
+                    'contents.css'
+                ],
+                scayt_autoStartup: true,
+                toolbarGroups: [
+                    { name: 'clipboard',   groups: [ 'scayt','clipboard', 'undo' ] },
+                    { name: 'editing', groups: [ 'spellchecker' ] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'document',	   groups: [ 'mode' ] },
+                    '/',
+                    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                    { name: 'paragraph',   groups: [ 'list', 'indent' ] },
+                    { name: 'styles' },
+                    { name: 'about' }
+                ],
+                removePlugins: 'font,iframe,pagebreak,flash,stylescombo,print,preview,save,smiley,pastetext,pastefromword',
+                uiColor: '#FFF000'
+			});
+        });
+    </script>
+    <style>
+        textarea#editor2 {
+            margin-top:20px;
+        }
+        div#inline1 {
+            border: 1px solid grey;
+            background-color:#E0FEC5;
+            height:220px;
+            margin:20px 0;
+        }
+        div#inline2 {
+            border: 1px solid grey;
+            background-color:#FFEBF5;
+            height:220px;
+        }
+    </style>
+	<link href="../../../samples/sample.css" rel="stylesheet">
+	<link href="contents.css" rel="stylesheet">
+</head>
+<body>
+	<textarea id="editor1" cols="10" rows="10">
+		<h3><strong>Simple Box Sample Classic CKEditor, Spell Check initially disabled</strong></h3>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h3 class="simplebox-title">Classic Spellcheck OFF</h3>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris.</p>
+	</textarea>
+
+	<div id="inline1" cols="10" rows="10" contenteditable="true">
+		<h3>Simple Box Sample Inlne CKEditor, Spell Check initially disabled</h3>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h3 class="simplebox-title">Inline Spellcheck OFF</h3>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris.</p>
+	</div>
+
+	<textarea id="editor2" cols="10" rows="10">
+		<h3><strong>Simple Box Sample Classic CKEditor, Spell Check initially enabled</strong></h3>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h3 class="simplebox-title">Classic Spellcheck ON</h3>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris.</p>
+	</textarea>
+
+    <br />&nbsp;<br />
+	<div id="inline2" cols="10" rows="10" contenteditable="true">
+		<h3>Simple Box Sample Inlne CKEditor, Spell Check initially enabled</h3>
+
+		<div class="simplebox align-right" style="width: 50%">
+			<h3 class="simplebox-title">Inline Spellcheck ON</h3>
+			<div class="simplebox-content">
+				<p>Foo <strong>bar</strong>.</p>
+			</div>
+		</div>
+
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet orci ut nisi adipiscing ultrices. Sed pellentesque iaculis malesuada. Pellentesque scelerisque, purus non porta dictum, neque urna bibendum dolor, eget tristique ipsum metus fringilla dolor. Nullam sed accumsan sapien. Vestibulum in placerat magna. Sed justo lacus, volutpat rhoncus odio luctus, ornare adipiscing mauris.</p>
+	</div>
+
+</body>
+</html>
