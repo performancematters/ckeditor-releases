@@ -12,6 +12,6 @@ Steps to reproduce - I have provided a html file that demonstrates the bug.
 
 Browser and OS - Lenovo laptop, Ubuntu (v 12.04), Chrome(v 33.0.1750.152) and Firefox(v 28.0)
 Screenshot - see 2014-03-19_ckeditor_inline_widget_scayt_bug.png
-Sample data - see 2014-03-19_ckeditor_inline_widget_scayt_bug.html
+Sample data - see 2014-03-19_ckeditor_inline_widget_scayt_bug.html (this must be viewed in a webserver to get the scayt_autoStartup=true to work)
 Test case file - Using simplebox widget: https://github.com/ckeditor/ckeditor-docs-samples/commit/8793b94892aa7876156b01c32c59cdedc5b103b3
 Build configuration -https://github.com/ckeditor/ckeditor-releases/commit/944d690c3d79c21efe3fce42b2ca231b08c4c909
