@@ -448,7 +448,7 @@ var addResourceCmd = {
 								[
 									{
 										type : 'html',
-										html : '<object width="100%" height="100%" data="' + resourceUrl + '">'
+										html : '<div class="pmi-resource-container"></div>'
 									}
 								]
 							}
@@ -468,7 +468,12 @@ var addResourceCmd = {
 				api.addFileContextMenuOption( { label : "View Resource", command : "viewResource" } , function( api, file )
 				{
 					// View the resource in a popup window w/in CKFinder
-					api.openDialog('viewResourceDialog');
+					api.openDialog('viewResourceDialog', function (dialog) {
+						var element = dialog.getContentElement('viewResourceDialog');
+						var resourceUrl = getResourceUrl(api.getSelectedFile().name, itembank);
+						var objectHtml = '<object width="100%" height="100%" data="' + resourceUrl + '">';
+						$('.pmi-resource-container', dialog.getElement().$).html(objectHtml);
+					});
 				});
 			};
 
