@@ -18,7 +18,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 		}
 
 		// Register the editing dialog.
-		CKEDITOR.dialog.add('embeddedresource-dialog', this.path + 'embeddedresource-dialog.js');
+		// CKEDITOR.dialog.add('embeddedresource-dialog', this.path + 'embeddedresource-dialog.js');
 
 		// Register the embeddedresource widget.
 		editor.widgets.add('embeddedresource', {
@@ -50,7 +50,7 @@ CKEDITOR.plugins.add('embeddedresource', {
 
 			// Set the widget dialog window name. This enables the automatic widget-dialog binding.
 			// This dialog window will be opened when creating a new widget or editing an existing one.
-			dialog: 'embeddedresource-dialog',
+			// dialog: 'embeddedresource-dialog',
 
 			pathName: 'object',
 
