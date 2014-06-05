@@ -537,7 +537,9 @@ var addResourceCmd = {
 * @return {boolen} true, if itembanks are in sync
 */
 function verifyResourceItembank(ckFinderItembank) {
-	var metadataItembank = ($('#itemBankSelection').length > 0) ? $('#itemBankSelection').val() : '';
+	var metadataItembank = ($('#itemBankSelection').length > 0)
+		? $('#itemBankSelection').val() : ($('div[data-defaultItembankId]').length > 0)
+		? $('div[data-defaultItembankId]').attr('data-defaultItembankId') : '' ;
 	return (metadataItembank == ckFinderItembank) ? true : false;
 }
 
