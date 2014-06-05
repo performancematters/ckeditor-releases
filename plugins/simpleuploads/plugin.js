@@ -403,7 +403,7 @@ var addResourceCmd = {
 		exec: function( editor ) {
 
 			// Set the current itembank for configuring ckFinder.
-			var itembank = ($('#itemBankSelection').length > 0) ? $('#itemBankSelection').val() : '';
+			var itembank = getItembankId();
 			CKFinder.config.connectorInfo = 'itembank=' + itembank;
 			CKFinder.config.toolbar_Full = [['Refresh', 'Settings', 'Maximize']];
 
@@ -511,6 +511,21 @@ var addResourceCmd = {
 			function getEditor() {
 				return editor;
 			}
+
+			/*
+			* Retrieve the itembank id.
+			*/
+			function getItembankId( )
+			{
+				var ibid = '';
+				if ($('#itemBankSelection').length > 0)
+					ibid = ($('#itemBankSelection').val());
+				else ($('div[data-defaultItembankId]').length > 0)
+					ibid = $('div[data-defaultItembankId]').attr('data-defaultItembankId');
+				console.log("SimpleUploads plugin itembank id = [" + ibid + "]");
+				return ibid;
+			}
+
 			finder.popup();	// Launch the ckfinder window
 		}
 	};
