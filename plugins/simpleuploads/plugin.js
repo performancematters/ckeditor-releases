@@ -520,7 +520,7 @@ var addResourceCmd = {
 				var ibid = '';
 				if ($('#itemBankSelection').length > 0)
 					ibid = ($('#itemBankSelection').val());
-				else ($('div[data-defaultItembankId]').length > 0)
+				else if ($('div[data-defaultItembankId]').length > 0)
 					ibid = $('div[data-defaultItembankId]').attr('data-defaultItembankId');
 				console.log("SimpleUploads plugin itembank id = [" + ibid + "]");
 				return ibid;
