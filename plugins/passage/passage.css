@@ -1,0 +1,45 @@
+.passage {
+	padding: 2px;
+	margin: 2px;
+	border: 1px solid #ccc;
+}
+
+.passage-label {
+	font-size: x-small;
+	position: absolute;
+	color: white;
+	background-color: #8af;
+	left: 5px;
+	right: 5px;
+	padding-left: 2px;
+	display: inline-block;
+}
+
+.passage-label:after {
+	content: "Passage"
+}
+
+.passage-content {
+	margin-top: 16px;
+	background-color: #eee;
+	padding: 2px 2px;
+	border: 1px solid #ccc;
+}
+
+.passage-content:after {
+	content: "\200b"; /* zero-width space */
+}
+
+.passage-preview {
+	height: 150px;
+	margin-top: 4px;
+}
+
+.passage-preview > iframe {
+	width: 99%;
+	height: 95%;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
