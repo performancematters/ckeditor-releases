@@ -70,13 +70,18 @@ CKEDITOR.plugins.add('embeddedresource', {
 
 				var label = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource-label' });
 
-				var content = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource-content' });
-				content.add(new CKEDITOR.htmlParser.text(data.uri + ' [' + data.type + ']'));
+				var content = new CKEDITOR.htmlParser.element('div', { class: 'embeddedresource-content' });
+				content.add(new CKEDITOR.htmlParser.text(data.uri /* + ' [' + data.type + ']' */));
 
-				var outer = new CKEDITOR.htmlParser.element('span', { class: 'embeddedresource' });
+				var preview = new CKEDITOR.htmlParser.element('div', { class: 'embeddedresource-preview' });
+				var iframe = new CKEDITOR.htmlParser.element('iframe', { src: data.uri });
+				preview.add(iframe);
+
+				var outer = new CKEDITOR.htmlParser.element('div', { class: 'embeddedresource' });
 				element.replaceWith(outer);
 				outer.add(label);
 				outer.add(content);
+				outer.add(preview);
 
 				return outer;
 			},
@@ -105,8 +110,8 @@ CKEDITOR.plugins.add('embeddedresource', {
 				//console.log('embeddedresource.data!', this.data);
 				var content = $(this.element.$).find('> .embeddedresource-content');
 				content.html(this.data.uri || '');
-				if (this.data && this.data.uri && this.data.uri.length > 0 && this.data.type && this.data.type.length > 0)
-					content.html(this.data.uri + ' [' + this.data.type + ']');
+				if (this.data && this.data.uri && this.data.uri.length > 0 /*&& this.data.type && this.data.type.length > 0*/)
+					content.html(this.data.uri /*+ ' [' + this.data.type + ']'*/);
 				else
 					content.html('&nbsp;'); // This is important. We see crazy bugs in ckeditor on getData() calls without this.
 			}

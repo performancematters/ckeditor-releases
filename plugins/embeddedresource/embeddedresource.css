@@ -2,32 +2,42 @@
 	padding: 2px;
 	margin: 2px;
 	border: 1px solid #ccc;
-	display: inline-block;
-	min-width: 60px;
 }
 
 .embeddedresource-label {
 	font-size: x-small;
-	display: inline-block;
 	position: absolute;
 	color: white;
 	background-color: #8af;
 	left: 5px;
 	right: 5px;
 	padding-left: 2px;
+	display: inline-block;
 }
 
 .embeddedresource-label:after {
-	content: "Attachment"
+	content: "Passage"
 }
 
 .embeddedresource-content {
-	display: inline-block;
 	margin-top: 16px;
+	background-color: #eee;
+	padding: 2px 2px;
+	border: 1px solid #ccc;
 }
 
 .embeddedresource-content:after {
 	content: "\200b"; /* zero-width space */
+}
+
+.embeddedresource-preview {
+	height: 150px;
+	margin-top: 4px;
+}
+
+.embeddedresource-preview > iframe {
+	width: 99%;
+	height: 95%;
 }
 
 /* ckeditor workarounds */
