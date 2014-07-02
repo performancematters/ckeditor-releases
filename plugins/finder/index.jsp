@@ -19,12 +19,9 @@
     <script>
 		$(document).ready(function () {
 			$('#finder').finder({ contextPath: '<%=contextPath%>' });
-			$('#finder').on('finder-select', function (e, path) {
-				console.log(e, this, path);
-				var url = '<%=contextPath%>/external/resource';
-				for (var i=2; i<path.length; ++i)
-					url += '/' + path[i];
-				window.opener.CKEDITOR.tools.callFunction(<%=CKEditorFuncNum%>, url);
+			$('#finder').on('finder-select', function (e, selection) {
+				console.log(e, this, selection);
+				window.opener.CKEDITOR.tools.callFunction(<%=CKEditorFuncNum%>, selection.contextPath + selection.pathString);
 				window.close();
 			});
       });

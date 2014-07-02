@@ -31,28 +31,22 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 						title: 'Browse Server',
 						onClick: function () {
 							var button = this;
+							var dialog = button.getDialog();
+							var uri = dialog.getContentElement('tab-passage', 'uri');
+
 							var width  = screen.availWidth *2/3;
 							var height = screen.availHeight*2/3;
 							var left = (screen.width /2)-(width /2);
 							var top  = (screen.height/2)-(height/2);
 							left += screen.availLeft;
 							top  += screen.availTop ;
-							var href = "/sasam/finder/index.jsp";
+							var href = editor.config.contextPath + '/finder/index.jsp';
 							var finderWindow = window.open(href, "finder", "width="+width+",height="+height+",left="+left+",top="+top);
-							window.finderWindow = finderWindow;
 							finderWindow.focus();
 							$(finderWindow).load(function () {
-								finderWindow.$('#finder').on('finder-select', function (e, path) {
-									//console.log(e, this, path);
-
-									var url = '/sasam/external/resource';
-									for (var i=2; i<path.length; ++i)
-										url += '/' + path[i];
-
-									var dialog = button.getDialog();
-									var uri = dialog.getContentElement('tab-passage', 'uri');
-									uri.setValue(url);
-
+								finderWindow.$('#finder').on('finder-select', function (e, selection) {
+									//console.log(e, this, selection);
+									uri.setValue(selection.contextPath + selection.pathString);
 									finderWindow.close();
 								});
 							});
