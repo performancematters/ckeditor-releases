@@ -2,7 +2,7 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
     return {
 		title: 'Passage Properties',
 		minWidth: 400,
-		minHeight: 200,
+		minHeight: 240,
 
 		contents: [
 			{
@@ -11,17 +11,17 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 				title: 'Passage',
 				elements: [
 					{
-						id: 'uri',
+						id: 'url',
 						type: 'text',
 						style: 'width: 100%;',
 						label: 'URL',
 						'default': '',
 						required: true,
 						setup: function (widget) {
-							this.setValue(widget.data.uri);
+							this.setValue(widget.data.url);
 						},
 						commit: function (widget) {
-							widget.setData('uri', this.getValue());
+							widget.setData('url', this.getValue());
 						}
 					},
 					{
@@ -32,7 +32,7 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 						onClick: function () {
 							var button = this;
 							var dialog = button.getDialog();
-							var uri = dialog.getContentElement('tab-passage', 'uri');
+							var url = dialog.getContentElement('tab-passage', 'url');
 
 							var width  = screen.availWidth *2/3;
 							var height = screen.availHeight*2/3;
@@ -46,10 +46,60 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							$(finderWindow).load(function () {
 								finderWindow.$('#finder').on('finder-select', function (e, selection) {
 									//console.log(e, this, selection);
-									uri.setValue(selection.contextPath + selection.pathString);
+									url.setValue(selection.contextPath + selection.pathString);
 									finderWindow.close();
 								});
 							});
+						}
+					},
+					{
+						id: 'height',
+						type: 'html',
+						html: '<div>' +
+								'<div style="font-weight:bold;margin-bottom:2px;">Passage height</div>' +
+								'<div><label><input type="radio" name="mode" value="expand" checked>Expand passage area as necessary to expose all content</label></div>' +
+								'<div><label><input type="radio" name="mode" value="fixed">Limit passage area to a fixed height with scrollbar</label></div>' +
+								'<div style="margin-left:30px;"><label>Display height:<input type="text" name="height" style="border:1px solid black;padding:2px;width:50px;margin:0 4px;">pixels</label></div>' +
+							'</div>',
+						setup: function (widget) {
+							var expandControl = $(this.getElement().$).find('input[value="expand"]');
+							var fixedControl = $(this.getElement().$).find('input[value="fixed"]');
+							var heightControl = $(this.getElement().$).find('input[name="height"]');
+
+							expandControl.add(fixedControl).off('change').on('change', function (event) {
+								var expand = expandControl[0].checked;
+								heightControl[0].disabled = expand;
+								heightControl.css({ color: expand ? 'grey' : 'black' });
+							});
+
+							var expand = widget.data && (!('height' in widget.data) || widget.data.height == 'expand');
+							expandControl[0].checked = expand;
+							fixedControl[0].checked = !expand;
+							heightControl.val(expand || !('height' in widget.data) ? '400' : widget.data.height);
+							expandControl.trigger('change');
+						},
+						commit: function (widget) {
+							var expandControl = $(this.getElement().$).find('input[value="expand"]');
+							var heightControl = $(this.getElement().$).find('input[name="height"]');
+
+							var height = expandControl[0].checked ? 'expand' : heightControl.val();
+							widget.setData('height', height);
+						}
+					},
+					{
+						id: 'font',
+						type: 'html',
+						html: '<div>' +
+								'<div style="font-weight:bold;margin-bottom:2px;">Font</div>' +
+								'<div><label><input type="checkbox" name="font" checked>Blend surrounding font into passage</label></div>' +
+							'</div>',
+						setup: function (widget) {
+							var fontblendControl = $(this.getElement().$).find('input');
+							fontblendControl[0].checked = widget.data && widget.data.fontblend;
+						},
+						commit: function (widget) {
+							var fontblendControl = $(this.getElement().$).find('input');
+							widget.setData('fontblend', fontblendControl[0].checked);
 						}
 					}
 				]

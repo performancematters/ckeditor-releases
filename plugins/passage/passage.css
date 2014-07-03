@@ -4,7 +4,7 @@
 	border: 1px solid #ccc;
 }
 
-.passage-label {
+.passage-titlebar {
 	font-size: x-small;
 	position: absolute;
 	color: white;
@@ -15,18 +15,18 @@
 	display: inline-block;
 }
 
-.passage-label:after {
+.passage-titlebar:after {
 	content: "Passage"
 }
 
-.passage-content {
+.passage-url {
 	margin-top: 16px;
 	background-color: #eee;
 	padding: 2px 2px;
 	border: 1px solid #ccc;
 }
 
-.passage-content:after {
+.passage-url:after {
 	content: "\200b"; /* zero-width space */
 }
 

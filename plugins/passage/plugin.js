@@ -35,8 +35,8 @@ CKEDITOR.plugins.add('passage', {
 			// The template will be used when creating new instances of the passage widget.
 			template:
 			'<div class="passage">' +
-				'<span class="passage-label"></span>' +
-				'<div class="passage-content"></div>' +
+				'<span class="passage-titlebar"></span>' +
+				'<div class="passage-url"></div>' +
 				'<div class="passage-preview"><iframe src=""></div>' +
 			'</div>',
 
@@ -53,7 +53,7 @@ CKEDITOR.plugins.add('passage', {
 			// This dialog window will be opened when creating a new widget or editing an existing one.
 			dialog: 'passage-dialog',
 
-			pathName: 'object',
+			pathName: 'passage',
 
 			// Check the elements that need to be converted to widgets.
 			//
@@ -66,40 +66,48 @@ CKEDITOR.plugins.add('passage', {
 				if (element.attributes.type != 'text/html')
 					return false;
 
-				//console.log('passage.upcast!');
+				data.url = element.attributes.data || '';
+				if (element.attributes.label)
+					$.extend(data, JSON.parse(element.attributes.label));
 
-				data.uri = element.attributes.data || '';
+				var titlebar = new CKEDITOR.htmlParser.element('span', { class: 'passage-titlebar' });
 
-				var label = new CKEDITOR.htmlParser.element('span', { class: 'passage-label' });
-
-				var content = new CKEDITOR.htmlParser.element('div', { class: 'passage-content' });
-				content.add(new CKEDITOR.htmlParser.text(data.uri));
+				var url = new CKEDITOR.htmlParser.element('div', { class: 'passage-url' });
+				url.add(new CKEDITOR.htmlParser.text(data.url));
 
 				var preview = new CKEDITOR.htmlParser.element('div', { class: 'passage-preview' });
-				var iframe = new CKEDITOR.htmlParser.element('iframe', { src: data.uri });
+				var iframe = new CKEDITOR.htmlParser.element('iframe', { src: data.url });
 				preview.add(iframe);
 
 				var outer = new CKEDITOR.htmlParser.element('div', { class: 'passage' });
 				element.replaceWith(outer);
-				outer.add(label);
-				outer.add(content);
+				outer.add(titlebar);
+				outer.add(url);
 				outer.add(preview);
 
 				return outer;
 			},
 
 			downcast: function (element) {
-				var objectElement = new CKEDITOR.htmlParser.element('object', { type: 'text/html', data: this.data.uri || '' });
-				//console.log('passage.downcast!', objectElement);
+				var label = {
+					fontblend: this.data.fontblend,
+					height: this.data.height
+				};
+				var labelJSON = JSON.stringify(label);
+
+				var objectElement = new CKEDITOR.htmlParser.element('object', { type: 'text/html', data: this.data.url, label: labelJSON });
 				return objectElement;
 			},
 
 			init: function () {
-				//console.log('passage.init!');
-
 				// Repair widget if necessary. This happens on paste, probably a widget bug.
-				if (!$(this.element.$).is(':has(.passage-label)'))
-					$(this.element.$).prepend('<span class="passage-label" />');
+				if (!$(this.element.$).is(':has(.passage-titlebar)'))
+					$(this.element.$).prepend('<span class="passage-titlebar" />');
+
+				// Reasonable defaults
+				this.data.url = '';
+				this.data.height = 'expand';
+				this.data.fontblend = true;
 			},
 
 			// Listen on the widget#data event which is fired
@@ -108,17 +116,12 @@ CKEDITOR.plugins.add('passage', {
 			// widget.setData() method, which we use in the dialog
 			// window.
 			data: function () {
-				//console.log('passage.data!', this.data);
-				var content = $(this.element.$).find('> .passage-content');
+				var url = $(this.element.$).find('> .passage-url');
 				var iframe = $(this.element.$).find('> .passage-preview > iframe');
-				if (this.data && this.data.uri && this.data.uri.length > 0) {
-					content.html(this.data.uri);
-					iframe.attr('src', this.data.uri);
-				}
-				else {
-					content.html('&nbsp;'); // This is important. We see crazy bugs in ckeditor on getData() calls without this.
-					iframe.attr('src', '');
-				}
+
+				// The nbsp is important. We see crazy bugs in ckeditor on getData() calls without this.
+				url.html(this.data.url.length == 0 ? '&nbsp;' : this.data.url);
+				iframe.attr('src', this.data.url);
 			}
 		});
 	}
