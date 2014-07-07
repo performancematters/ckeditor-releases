@@ -101,8 +101,10 @@ CKEDITOR.plugins.add('passage', {
 
 			init: function () {
 				// Repair widget if necessary. This happens on paste, probably a widget bug.
-				if (!$(this.element.$).is(':has(.passage-titlebar)'))
-					$(this.element.$).prepend('<span class="passage-titlebar" />');
+				if (!$(this.element.$).is(':has(.passage-titlebar)')) {
+					$(this.element.$).prepend('<span class="passage-titlebar" />'); // This element is simply missing.
+					$(this.element.$).find('> .passage-preview > iframe').removeAttr('style') // Copy-and-paste gives us a style attribute on the iframe we don't want.
+				}
 
 				// Reasonable defaults
 				this.data.url = '';
