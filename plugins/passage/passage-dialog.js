@@ -40,12 +40,18 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							var top  = (screen.height/2)-(height/2);
 							left += screen.availLeft;
 							top  += screen.availTop ;
-							var href = editor.config.contextPath + '/finder/index.jsp';
+							var href = editor.config.contextPath + '/finder/index.jsp?embedded';
 							var finderWindow = window.open(href, "finder", "width="+width+",height="+height+",left="+left+",top="+top);
 							finderWindow.focus();
 							$(finderWindow).load(function () {
-								finderWindow.$('#finder').on('finder-select', function (e, selection) {
-									//console.log(e, this, selection);
+								var finder = finderWindow.$('#finder');
+
+								finder.finder({
+									contextPath: editor.config.contextPath,
+									initialSelection: url.getValue()
+								});
+
+								finder.on('finder-select', function (e, selection) {
 									url.setValue(selection.contextPath + selection.pathString);
 									finderWindow.close();
 								});
