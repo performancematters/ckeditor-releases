@@ -4,6 +4,31 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 		minWidth: 400,
 		minHeight: 240,
 
+		onLoad: function (evt) {
+			//
+			// We go through some trouble to make sure that tabbing through the dialog works as expected.
+			//
+
+			var urlElement = this.getContentElement('tab-passage', 'url');
+			var heightElement = this.getContentElement('tab-passage', 'height');
+			var fontElement = this.getContentElement('tab-passage', 'font');
+
+			var urlInput = $(urlElement.getElement().$).find('input');
+			this.addFocusable(new CKEDITOR.dom.element(urlInput[0]), 0);
+
+			var expandInput = $(heightElement.getElement().$).find('input[value="expand"]');
+			this.addFocusable(new CKEDITOR.dom.element(expandInput[0]), 2);
+
+			var fixedInput = $(heightElement.getElement().$).find('input[value="fixed"]');
+			this.addFocusable(new CKEDITOR.dom.element(fixedInput[0]), 3);
+
+			var heightInput = $(heightElement.getElement().$).find('input[name="height"]');
+			this.addFocusable(new CKEDITOR.dom.element(heightInput[0]), 4);
+
+			var fontInput = $(fontElement.getElement().$).find('input[name="font"]');
+			this.addFocusable(new CKEDITOR.dom.element(fontInput[0]), 5);
+		},
+
 		contents: [
 			{
 				id: 'tab-passage',
@@ -12,16 +37,19 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 				elements: [
 					{
 						id: 'url',
-						type: 'text',
-						style: 'width: 100%;',
-						label: 'URL',
-						'default': '',
-						required: true,
+						type: 'html',
+						html: '<div>' +
+								'<div style="font-weight:bold;margin-bottom:2px;">URL</div>' +
+								'<input type="text" name="height" style="border:1px solid #aaa;padding:4px;width:98%;border-radius:3px;">' +
+								'<div style="margin-top:2px;">Note: URLs to external sources will become inactive over time.</div>' +
+							'</div>',
 						setup: function (widget) {
-							this.setValue(widget.data.url);
+							var input = $(this.getElement().$).find('input');
+							input.val(widget.data.url);
 						},
 						commit: function (widget) {
-							widget.setData('url', this.getValue());
+							var input = $(this.getElement().$).find('input');
+							widget.setData('url', input.val());
 						}
 					},
 					{
@@ -32,7 +60,8 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 						onClick: function () {
 							var button = this;
 							var dialog = button.getDialog();
-							var url = dialog.getContentElement('tab-passage', 'url');
+							var urlElement = dialog.getContentElement('tab-passage', 'url');
+							var urlInput = $(urlElement.getElement().$).find('input');
 
 							var width  = screen.availWidth *2/3;
 							var height = screen.availHeight*2/3;
@@ -48,11 +77,11 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 
 								finder.finder({
 									contextPath: editor.config.contextPath,
-									initialSelection: url.getValue()
+									initialSelection: urlInput.val()
 								});
 
 								finder.on('finder-select', function (e, selection) {
-									url.setValue(selection.contextPath + selection.pathString);
+									urlInput.val(selection.contextPath + selection.pathString);
 									finderWindow.close();
 								});
 							});
@@ -65,7 +94,7 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 								'<div style="font-weight:bold;margin-bottom:2px;">Passage height</div>' +
 								'<div><label><input type="radio" name="mode" value="expand" checked>Expand passage area as necessary to expose all content</label></div>' +
 								'<div><label><input type="radio" name="mode" value="fixed">Limit passage area to a fixed height with scrollbar</label></div>' +
-								'<div style="margin-left:30px;"><label>Display height:<input type="text" name="height" style="border:1px solid black;padding:2px;width:50px;margin:0 4px;">pixels</label></div>' +
+								'<div style="margin-left:30px;"><label>Display height:<input type="text" name="height" style="border:1px solid #aaa;padding:4px;width:50px;margin:0 4px;border-radius:3px;">pixels</label></div>' +
 							'</div>',
 						setup: function (widget) {
 							var expandControl = $(this.getElement().$).find('input[value="expand"]');
