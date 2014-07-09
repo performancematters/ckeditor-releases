@@ -63,27 +63,8 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							var urlElement = dialog.getContentElement('tab-passage', 'url');
 							var urlInput = $(urlElement.getElement().$).find('input');
 
-							var width  = screen.availWidth *2/3;
-							var height = screen.availHeight*2/3;
-							var left = (screen.width /2)-(width /2);
-							var top  = (screen.height/2)-(height/2);
-							left += screen.availLeft;
-							top  += screen.availTop ;
-							var href = editor.config.contextPath + '/finder/index.jsp?embedded';
-							var finderWindow = window.open(href, "finder", "width="+width+",height="+height+",left="+left+",top="+top);
-							finderWindow.focus();
-							$(finderWindow).load(function () {
-								var finder = finderWindow.$('#finder');
-
-								finder.finder({
-									contextPath: editor.config.contextPath,
-									initialSelection: urlInput.val()
-								});
-
-								finder.on('finder-select', function (e, selection) {
-									urlInput.val(selection.contextPath + selection.pathString);
-									finderWindow.close();
-								});
+							require(['common'], function (common) {
+								common.openFileBrowserPopup(editor, urlInput.val(), function (selection) { urlInput.val(selection) });
 							});
 						}
 					},
