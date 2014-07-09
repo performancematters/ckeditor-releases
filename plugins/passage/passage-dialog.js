@@ -1,4 +1,24 @@
 CKEDITOR.dialog.add('passage-dialog', function (editor) {
+
+	function recoverCommon() {
+		// I really wish I knew a better way to recover the 'common' object than this.
+
+		// Remove any custom requirejs error handler so we can handle errors here.
+		var orignalRequireJSErrorHandler = requirejs.onError;
+		requirejs.onError = null;
+
+		try {
+			// This succeeds in the testing environment without all of Unify loaded but fails with full Unify.
+			return require('./common');
+		} catch (e) {
+			// This succeeds in full Unify but fails in the testing environment.
+			return require('pmQtiLib/common');
+		} finally {
+			// Restore any custom requirejs error handler.
+			requirejs.onError = orignalRequireJSErrorHandler;
+		}
+	}
+
     return {
 		title: 'Passage Properties',
 		minWidth: 400,
@@ -63,9 +83,8 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							var urlElement = dialog.getContentElement('tab-passage', 'url');
 							var urlInput = $(urlElement.getElement().$).find('input');
 
-							require(['common'], function (common) {
-								common.openFileBrowserPopup(editor, urlInput.val(), function (selection) { urlInput.val(selection) });
-							});
+							var common = recoverCommon();
+							common.openFileBrowserPopup(editor, urlInput.val(), function (selection) { urlInput.val(selection) });
 						}
 					},
 					{
