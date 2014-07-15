@@ -86,11 +86,13 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							var common = recoverCommon();
 							common.openFinderDialogWindow({
 								contextPath: editor.config.contextPath,
-								load: function () {
+								title: 'Choose Passage',
+								load: function (finder) {
 									var finderDialogWindow = this;
-									var finder = finderDialogWindow.$('#finder');
 									finder.finder({
 										contextPath: editor.config.contextPath,
+										target: 'text/html',
+										prompt: 'Select a passage:',
 										initialSelection: urlInput.val()
 									})
 									.on('finder-select', function (event, selection) {
