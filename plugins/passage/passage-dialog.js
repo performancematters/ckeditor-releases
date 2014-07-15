@@ -84,7 +84,24 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 							var urlInput = $(urlElement.getElement().$).find('input');
 
 							var common = recoverCommon();
-							common.openFileBrowserPopup(editor, urlInput.val(), function (selection) { urlInput.val(selection) });
+							common.openFinderDialogWindow({
+								contextPath: editor.config.contextPath,
+								load: function () {
+									var finderDialogWindow = this;
+									var finder = finderDialogWindow.$('#finder');
+									finder.finder({
+										contextPath: editor.config.contextPath,
+										initialSelection: urlInput.val()
+									})
+									.on('finder-select', function (event, selection) {
+										finderDialogWindow.close();
+										urlInput.val(selection.contextPath + selection.pathString);
+									})
+									.on('finder-cancel', function (event) {
+										finderDialogWindow.close();
+									});
+								}
+							});
 						}
 					},
 					{
