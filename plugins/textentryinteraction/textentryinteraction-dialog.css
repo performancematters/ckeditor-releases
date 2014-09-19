@@ -1,0 +1,29 @@
+.textentryinteraction-dialog th {
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.textentryinteraction-dialog input[type="radio"] {
+	margin-right: 2px;
+}
+
+.textentryinteraction-dialog input[type="text"] {
+	border: 1px solid #aaa;
+	padding: 4px;
+	width: 200px;
+	margin: 0 4px 2px 4px;
+	border-radius: 3px;
+}
+
+.textentryinteraction-dialog input.mappedValue {
+	width: 30px;
+}
+
+.textentryinteraction-dialog td {
+	text-align: center;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
