@@ -63,9 +63,8 @@ CKEDITOR.plugins.add('passage', {
 			upcast: function(element, data) {
 				if (element.name != 'cke:object')
 					return false;
-				if (element.attributes.type != 'text/html')
-					return false;
 
+				data.contentType = element.attributes.type || 'text/html';
 				data.url = element.attributes.data || '';
 				if (element.attributes.label)
 					$.extend(data, JSON.parse(element.attributes.label));
@@ -95,7 +94,7 @@ CKEDITOR.plugins.add('passage', {
 				};
 				var labelJSON = JSON.stringify(label);
 
-				var objectElement = new CKEDITOR.htmlParser.element('object', { type: 'text/html', data: this.data.url, label: labelJSON });
+				var objectElement = new CKEDITOR.htmlParser.element('object', { type: this.data.contentType, data: this.data.url, label: labelJSON });
 				return objectElement;
 			},
 

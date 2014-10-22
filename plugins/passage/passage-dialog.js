@@ -70,6 +70,7 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 						commit: function (widget) {
 							var input = $(this.getElement().$).find('input');
 							widget.setData('url', input.val());
+							widget.setData('contentType', input.attr('data-content-type'));
 						}
 					},
 					{
@@ -98,6 +99,7 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 									.on('finder-select', function (event, selection) {
 										finderDialogWindow.close();
 										urlInput.val(selection.contextPath + selection.pathString);
+										urlInput.attr("data-content-type", selection.contentType);
 									})
 									.on('finder-cancel', function (event) {
 										finderDialogWindow.close();
