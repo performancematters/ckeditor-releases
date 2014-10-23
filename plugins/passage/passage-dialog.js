@@ -66,11 +66,14 @@ CKEDITOR.dialog.add('passage-dialog', function (editor) {
 						setup: function (widget) {
 							var input = $(this.getElement().$).find('input');
 							input.val(widget.data.url);
+							if (widget.data.contentType)
+								input.attr('data-content-type', widget.data.contentType)
 						},
 						commit: function (widget) {
 							var input = $(this.getElement().$).find('input');
 							widget.setData('url', input.val());
-							widget.setData('contentType', input.attr('data-content-type'));
+							if (input.attr('data-content-type'))
+								widget.setData('contentType', input.attr('data-content-type'));
 						}
 					},
 					{
