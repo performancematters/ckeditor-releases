@@ -104,6 +104,32 @@ CKEDITOR.dialog.add('textentryinteraction-dialog', function (editor) {
 									'</tr>' +
 									'</tbody></table>' +
 							'</div>',
+						validate: function (widget) {
+							var instance = $('#' + this.domId);
+							var template = instance.find('input[name="template"]:checked').attr('value');
+							switch (template) {
+							case 'match_correct':
+								var singleInput = instance.find('input[name="single"]').val().trim();
+								return CKEDITOR.dialog.validate.notEmpty("A correct answer is required.")(singleInput);
+
+							case 'map_response':
+								var valid = true;
+								instance.find('tbody > tr').each(function () {
+									var mapKey = $(this).find('.mapKey').val().trim();
+									if (mapKey.length > 0) {
+										var mappedValue = $(this).find('.mappedValue').val().trim();
+										valid = CKEDITOR.dialog.validate.notEmpty("A point value is required for each answer.")(mappedValue);
+										if (valid === true)
+											valid = CKEDITOR.dialog.validate.number("A point value must be a number.")(mappedValue);
+										return valid === true;
+									}
+								});
+								return valid;
+
+							default:
+								throw new Error("Unimplemented");
+							}
+						},
 						setup: function (widget) {
 							var instance = $('#' + this.domId);
 
