@@ -1,0 +1,52 @@
+.gapmatchelement-header {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.gapmatchelement-eee {
+	color: #222;
+	background: #eee;
+	background: -ms-linear-gradient(top, #eee, #ddd);
+	background: -webkit-linear-gradient(top, #eee, #ddd);
+	background: -moz-linear-gradient(top, #eee, #ddd);
+	background: linear-gradient(top, #eee, #ddd);
+}
+
+
+.gapmatchelement-placeholder {
+	border: 1px solid #aaa;
+	padding: 4px;
+	position: absolute;
+	left: 30px;
+	right: 30px;
+	width: 296px;
+}
+
+.gapmatchelement-note {
+	padding: 4px;
+	position: absolute;
+	margin-top:10px;
+	width: 296px;
+}
+
+.gapmatchelement-dialog .ui-icon { /* Ouch */
+	background-image: url(images/ui-icons_222222_256x240.png);
+	position: absolute;
+	width: 16px;
+	height: 16px;
+}
+
+.gapmatchelement-dialog .ui-icon:hover {
+	opacity: 1
+}
+
+.gapmatchelement-dialog .ui-icon-close {
+	left: -2px;
+	top: -2px;
+	background-position: -80px -128px; /* Ouch */
+}
+
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
