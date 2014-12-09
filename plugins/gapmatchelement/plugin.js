@@ -27,7 +27,7 @@ CKEDITOR.plugins.add('gapmatchelement', {
             // Read more about the Advanced Content Filter here:
             // * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
             // * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-            allowedContent: 'gapmatchelement[data-placeholder,data-identifier]',
+            allowedContent: 'gapmatchelement[data-responsedeclaration,data-identifier];gaptext[identifier,matchMax]',
 
             // Minimum HTML which is required by this widget to work.
             requiredContent: 'gapmatchelement',
@@ -75,13 +75,14 @@ CKEDITOR.plugins.add('gapmatchelement', {
                 if (element.name != 'gapmatchelement')
                     return false;
 
-				data.gapMatchElementData = {};
+				data.interactionData = {};
+
+				if (element.attributes && 'data-responsedeclaration' in element.attributes) {
+					data.interactionData.responseDeclaration = JSON.parse(element.attributes['data-responsedeclaration']);
+				}
 
 				if (element.attributes && 'data-identifier' in element.attributes)
-					data.gapMatchElementData.responseDeclaration = JSON.parse(element.attributes['data-identifier']);
-
-				if (element.attributes && 'data-placeholder' in element.attributes)
-					data.gapMatchElementData.placeholder = JSON.parse(element.attributes['data-placeholder']);
+					data.interactionData.identifier = element.attributes['data-identifier'];
 
                 var label = new CKEDITOR.htmlParser.element('span', { class: 'gapmatchelement-label' });
 
@@ -93,17 +94,54 @@ CKEDITOR.plugins.add('gapmatchelement', {
                 outer.add(label);
                 outer.add(content);
 
+				var choices = [];
+				for (var i=0; i<element.children.length; ++i) {
+					var childElement = element.children[i];
+					if (childElement instanceof CKEDITOR.htmlParser.element && childElement.name == 'gaptext') {
+						var choice = { text: '' };
+
+						if (childElement.attributes) {
+							if ('identifier' in childElement.attributes)
+								choice.identifier = childElement.attributes.identifier;
+							if ('matchmax' in childElement.attributes)
+								choice.fixed = childElement.attributes.matchmax;
+						}
+
+						if (childElement.children.length > 0) {
+							var textElement = childElement.children[0];
+							if (textElement instanceof CKEDITOR.htmlParser.text)
+								choice.text = textElement.value;
+						}
+
+						choices.push(choice);
+					}
+				}
+				data.interactionData.choices = choices;
+
                 return outer;
             },
 
             downcast: function (element) {
 				var gapMatchElement = new CKEDITOR.htmlParser.element('gapmatchelement');
 
-				if (this.data && this.data.gapMatchElementData && this.data.gapMatchElementData.responseDeclaration)
-					gapMatchElement.attributes['data-identifier'] = JSON.stringify(this.data.gapMatchElementData.identifier);
+				if (this.data && this.data.interactionData && this.data.interactionData.responseDeclaration)
+					gapMatchElement.attributes['data-responsedeclaration'] = JSON.stringify(this.data.interactionData.responseDeclaration);
 
-				if (this.data && this.data.gapMatchElementData && 'placeholder' in this.data.gapMatchElementData)
-					gapMatchElement.attributes['data-placeholder'] = JSON.stringify(this.data.gapMatchElementData.placeholder);
+				if (this.data && this.data.interactionData && 'identifier' in this.data.interactionData)
+					gapMatchElement.attributes['data-identifier'] = JSON.stringify(this.data.interactionData.identifier);
+
+				if (this.data && this.data.interactionData && this.data.interactionData.choices) {
+					var choices = this.data.interactionData.choices;
+					for (var i=0; i<choices.length; ++i) {
+						var choice = choices[i];
+						var attributes = { identifier: choice.identifier };
+						if (choice.matchmax)
+							attributes.matchMax = true;
+						var gapTextElement = new CKEDITOR.htmlParser.element('gaptext', attributes);
+						gapTextElement.add(new CKEDITOR.htmlParser.text(choice.text));
+						gapMatchElement.add(gapTextElement);
+					}
+				}
 
 				return gapMatchElement;
             },
@@ -112,6 +150,12 @@ CKEDITOR.plugins.add('gapmatchelement', {
                 // Repair widget if necessary. This happens on paste, probably a widget bug.
                 if (!$(this.element.$).is(':has(.gapmatchelement-label)'))
                     $(this.element.$).prepend('<span class="gapmatchelement-label" />');
+
+                var gapScore = $(this.editor.element.$).attr('data-gapScore');
+                gapScore = JSON.parse(gapScore);
+                var gapText = $(this.editor.element.$).attr('data-gapText');
+                gapText = JSON.parse(gapText);
+                console.log("done init");
             },
 
             // Listen on the widget#data event which is fired
@@ -121,11 +165,23 @@ CKEDITOR.plugins.add('gapmatchelement', {
             // window.
             data: function () {
                 var content = $(this.element.$).find('> .gapmatchelement-content');
-				if (this.data && this.data.gapMatchElementData && this.data.gapMatchElementData.placeholder) {
-					content.html('<i>' + this.data.gapMatchElementData.placeholder + '</i>');
-				} else {
-					content.html('<i>Word</i>');
-				}
+                if (this.data && this.data.interactionData && this.data.interactionData.choices) {
+					var description;
+					switch (this.data.interactionData.choices.length) {
+					case 0:
+						description = '<i>No answers</i>';
+						break;
+					case 1:
+						description = '<i>One answer</i>';
+						break;
+					default:
+						description = '<i>' + this.data.interactionData.choices.length + ' possible answers</i>';
+						break;
+					}
+					content.html(description);
+                }
+				else
+					content.html('&nbsp;');
             }
         });
     }
