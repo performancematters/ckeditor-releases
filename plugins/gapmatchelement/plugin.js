@@ -184,12 +184,15 @@ CKEDITOR.plugins.add('gapmatchelement', {
                             var mapEntry = mapEntries[i];
                             if (mapEntry.mapKey.indexOf(widgetIdentifier) > -1) {
                                 mapGapElementCount++;
-                                answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
-                                for (k = 0; k < gapTextArray.length; k++) {
-                                    if (gapTextArray[k].identifier == answer) {
-                                        var value = parseInt(mapEntry.mappedValue);
-                                        description = '<i>' + gapTextArray[k].value + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
-                                        break;
+                                // Don't bother redefining a single answer, if there are multiple answers.
+                                if (mapGapElementCount == 1) {
+                                    answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
+                                    for (k = 0; k < gapTextArray.length; k++) {
+                                        if (gapTextArray[k].identifier == answer) {
+                                            var value = parseInt(mapEntry.mappedValue);
+                                            description = '<i>' + gapTextArray[k].value + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
+                                            break;
+                                        }
                                     }
                                 }
                             }

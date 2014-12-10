@@ -12,21 +12,79 @@
 	background: linear-gradient(top, #eee, #ddd);
 }
 
+.gapmatchelement-dialog ul {
+	margin-left: 8px;
+}
 
-.gapmatchelement-placeholder {
+.gapmatchelement-dialog li {
+	width: 400px;
+	position: relative;
+	height: 26px;
+	list-style-type: none;
+}
+
+.gapmatchelement-correctness {
+	position: absolute;
+	width: 64px;
+	height: 24px;
+	display: table;
+	border-left: 2px solid transparent;
+}
+
+.gapmatchelement-correctness > span.icon {
+	width: 16px;
+	height: 16px;
+	display: table-cell;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-position-x: 2px;
+	padding-left: 2px;
+	padding-right: 4px;
+}
+
+.gapmatchelement-inactive .gapmatchelement-correctness *,
+.gapmatchelement-inactive .gapmatchelement-rowcontrols * {
+	visibility: hidden;
+}
+
+.gapmatchelement-correctness > span.label {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.gapmatchelement-incorrect > span.icon {
+	background-image: url(images/red_x.png);
+}
+
+.gapmatchelement-correct > span.icon {
+	background-image: url(images/greencheck.png);
+}
+
+.gapmatchelement-incorrect > span.label:after {
+	content: "wrong";
+	color: red;
+}
+
+.gapmatchelement-correct > span.label:after {
+	content: "correct";
+	color: green;
+}
+
+.gapmatchelement-textinput {
 	border: 1px solid #aaa;
 	padding: 4px;
 	position: absolute;
-	left: 30px;
+	left: 66px;
 	right: 30px;
 	width: 296px;
 }
 
-.gapmatchelement-note {
-	padding: 4px;
+.gapmatchelement-rowcontrols {
 	position: absolute;
-	margin-top:10px;
-	width: 296px;
+	width: 26px;
+	height: 24px;
+	right: 0;
 }
 
 .gapmatchelement-dialog .ui-icon { /* Ouch */

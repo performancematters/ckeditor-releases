@@ -6,7 +6,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 				'<span class="icon"></span>' +
 				'<span class="label"></span>' +
 			'</a>' +
-			'<input class="gapmatchelement-textinput" type="text">' +
+			'<input class="gapmatchelement-textinput" type="text" disabled>' +
 		'</li>';
 
 	function randomIdentifier() {
@@ -19,7 +19,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 
 
-	function addNewChoice($element, text, id) {
+	function addNewChoice($element, text, id, mappingFlag, score) {
 		var newChoice = $(choiceTemplate);
 		// TODO: Load point values
 		/*
@@ -29,6 +29,10 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		*/
 		newChoice.find('.gapmatchelement-textinput').val(text);
 		newChoice.find('.gapmatchelement-textinput').attr('data-identifier', id);
+		if (!mappingFlag) {
+			newChoice.find('.gapmatchelement-correctness').toggleClass('inlinechoiceinteraction-correct', score);
+			newChoice.find('.gapmatchelement-correctness').toggleClass('inlinechoiceinteraction-incorrect', score);
+		}
 
 		$element.find('ul').append(newChoice);
 		return newChoice;
@@ -65,6 +69,48 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 				return;
 			}
 		}
+	}
+
+    /**
+     * Get score for choiceIdentifier
+     * @param {String} widgetIdentifier
+     * @param {boolean} mappingFlag
+     * @param {Array} scoreData
+     * @param {String} choiceIdentifier
+     * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
+     */
+	function getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier) {
+		// the default score for correctResponse is false; for mapping it is null.
+		var result = (mappingFlag) ? null : false;
+		if (scoreData != null) {
+			for (var i=0; i<scoreData.length; ++i) {
+				var answer = scoreData[i];
+				if (mappingFlag) {
+
+				} else {
+					if (answer.indexOf(widgetIdentifier) > -1) {
+						answer = answer.replace(widgetIdentifier, "").trim();
+						if (answer == choiceIdentifier) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+    /**
+     * Create an object of answer choices
+     * @param {Array} gapText entries
+     * @return {Ovject} where key is identifier and value is value.
+     */
+	function getChoiceObj(gapText) {
+		var result = {};
+		for (var i=0; i<gapText.length; ++i) {
+			result[gapText[i].identifier] = gapText[i].value.trim();
+		}
+		return result;
 	}
 
     return {
@@ -130,7 +176,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 						id: 'correctAnswerControls',
 						type: 'html',
 						html: '<div class="gapmatchelement-dialog">' +
-							'<div class="gapmatchelement-header">Response Choices</div>' +
+							'<div class="gapmatchelement-header">Correct Response</div>' +
 							'<ul></ul>' +
 							'</div>',
 						setup: function (widget) {
@@ -138,24 +184,41 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 							if ( widget.data.gapProps && widget.data.gapText ) {
 								var gapProps = JSON.parse(widget.data.gapProps);
 								var gapText = JSON.parse(widget.data.gapText);
+								var choiceObj = getChoiceObj(gapText);
 								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
-								if (widget.data.interactionData && 'correctResponse' in widget.data.interactionData) {
-									var pointValueFlag = (widget.data.interactionData.responseDeclaration.correctResponse) ? false : true;
-								}
 
 								// Clear choices and build a new list
 								$element.find('ul').empty();
 
-								var identifierOfCorrectResponse = null;
-								if (widget.data.interactionData && widget.data.interactionData.responseDeclaration && widget.data.interactionData.responseDeclaration.correctResponse)
-									identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse;
+								// Perform a one time validation check for loading existing data.
+								var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
+													&& widget.data.interactionData.responseDeclaration)
 
-								for (var i=0; i<gapText.length; ++i) {
-									var row = addNewChoice($element, gapText[i].value.trim(), gapText[i].identifier);
-									// TODO: check for mappingFlag and interaction.data.correctResponse and populate answer choices.
+								// Set/Load the gap match element identifier
+								var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
+
+								// Update heading for "point value scoring"
+								if (mappingFlag) {
+									$element.find('.gapmatchelement-header').html("Point Value Scoring");
 								}
 
-								fixTabOrder(this.getDialog());
+								// Prep for loading existing score data
+								var scoreData = null;
+								if (existingData) {
+									if (widget.data.interactionData.responseDeclaration.correctResponse) {
+										scoreData = widget.data.interactionData.responseDeclaration.correctResponse;
+									} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
+										scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
+									}
+								}
+
+								for (var choiceIdentifier in choiceObj) {
+									// Get either the boolean/point value for existing score data, if exists.
+									var score = getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier);
+									var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, mappingFlag, score);
+								}
+
+								//fixTabOrder(this.getDialog());
 							}
 						},
 						commit: function (widget) {
