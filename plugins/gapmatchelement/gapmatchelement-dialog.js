@@ -135,55 +135,63 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 							'</div>',
 						setup: function (widget) {
 							var $element = $('#' + this.domId);
+							if ( widget.data.gapProps && widget.data.gapText ) {
+								var gapProps = JSON.parse(widget.data.gapProps);
+								var gapText = JSON.parse(widget.data.gapText);
+								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
+								if (widget.data.interactionData && 'correctResponse' in widget.data.interactionData) {
+									var pointValueFlag = (widget.data.interactionData.responseDeclaration.correctResponse) ? false : true;
+								}
 
-							var gapScore = JSON.parse(widget.data.gapScore);
-							var gapText = JSON.parse(widget.data.gapText);
-							var mappingFlag = (gapScore.points && gapScore.points == 'false') ? false : true;
-							if (widget.data.interactionData && 'correctResponse' in widget.data.interactionData) {
-								var pointValueFlag = (widget.data.interactionData.responseDeclaration.correctResponse) ? false : true;
+								// Clear choices and build a new list
+								$element.find('ul').empty();
+
+								var identifierOfCorrectResponse = null;
+								if (widget.data.interactionData && widget.data.interactionData.responseDeclaration && widget.data.interactionData.responseDeclaration.correctResponse)
+									identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse;
+
+								for (var i=0; i<gapText.length; ++i) {
+									var row = addNewChoice($element, gapText[i].value.trim(), gapText[i].identifier);
+									// TODO: check for mappingFlag and interaction.data.correctResponse and populate answer choices.
+								}
+
+								fixTabOrder(this.getDialog());
 							}
-
-							// Clear choices and build a new list
-							$element.find('ul').empty();
-
-							var identifierOfCorrectResponse = null;
-							if (widget.data.interactionData && widget.data.interactionData.responseDeclaration && widget.data.interactionData.responseDeclaration.correctResponse)
-								identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse;
-
-							for (var i=0; i<gapText.length; ++i) {
-								var row = addNewChoice($element, gapText[i].value.trim(), gapText[i].identifier);
-								// TODO: check for mappingFlag and interaction.data.correctResponse and populate answer choices.
-							}
-
-							fixTabOrder(this.getDialog());
 						},
 						commit: function (widget) {
 							var $element = $('#' + this.domId);
+							if ( widget.data.gapProps && widget.data.gapText ) {
+								var gapProps = JSON.parse(widget.data.gapProps);
+								var gapText = JSON.parse(widget.data.gapText);
+								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
 
-							var choices = [];
-							var identifierOfCorrectResponse = null;
-							$element.find('li').each(function () {
-								var input = $(this).find('.gapmatchelement-textinput');
-								var text = input.val().trim();
-								if (text.length > 0) {
-									var identifier = input.attr('data-identifier') || randomIdentifier();
-									var gapMatchChoice = { identifier: identifier, text: text };
-									choices.push(gapMatchChoice);
+								var choices = [];
+								var identifierOfCorrectResponse = null;
+								$element.find('li').each(function () {
+									var input = $(this).find('.gapmatchelement-textinput');
+									var text = input.val().trim();
+									if (text.length > 0) {
+										var identifier = input.attr('data-identifier') || randomIdentifier();
+										var gapMatchChoice = { identifier: identifier, text: text };
+										choices.push(gapMatchChoice);
 
-									var correct = $(this).find('.gapmatchelement-correct').length == 1;
-									if (correct)
-										identifierOfCorrectResponse = input.attr('data-identifier');
-								}
-							});
+										var correct = $(this).find('.gapmatchelement-correct').length == 1;
+										if (correct)
+											identifierOfCorrectResponse = input.attr('data-identifier');
+									}
+								});
 
-							var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single' };
-							if (identifierOfCorrectResponse != null)
-								responseDeclaration.correctResponse = identifierOfCorrectResponse;
+								var gapScore = ["W G1","Su G2"];
 
-							widget.setData('interactionData', {
-								responseDeclaration: responseDeclaration,
-								choices: choices
-							});
+								var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single' };
+								if (identifierOfCorrectResponse != null)
+									responseDeclaration.correctResponse = identifierOfCorrectResponse;
+
+								widget.setData('interactionData', {
+									responseDeclaration: responseDeclaration,
+									gapScore: gapScore
+								});
+							}
 						}
 					}
 				]
