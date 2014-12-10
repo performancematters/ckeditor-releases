@@ -146,15 +146,19 @@ CKEDITOR.plugins.add('gapmatchelement', {
 				return gapMatchElement;
             },
 
-            init: function () {
+            init: function (data) {
                 // Repair widget if necessary. This happens on paste, probably a widget bug.
                 if (!$(this.element.$).is(':has(.gapmatchelement-label)'))
                     $(this.element.$).prepend('<span class="gapmatchelement-label" />');
 
+                // retrieve data on ckeditor instance, and set as widget data.
                 var gapScore = $(this.editor.element.$).attr('data-gapScore');
-                gapScore = JSON.parse(gapScore);
+                if (gapScore)
+                    this.setData('gapScore', gapScore);
                 var gapText = $(this.editor.element.$).attr('data-gapText');
-                gapText = JSON.parse(gapText);
+                if (gapText)
+                    this.setData('gapText', gapText);
+
                 console.log("done init");
             },
 
