@@ -103,7 +103,7 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 				if (document.activeElement && ($(document.activeElement).is('.hottextinteraction-correctness') || $(document.activeElement).is('.hottextinteraction-textinput')))
 					focusBeforeSort = document.activeElement;
 			}).on("sortupdate", function (event, ui) {
-				fixTabOrder(dialog);
+				// fixTabOrder(dialog);
 				if (focusBeforeSort) {
 					focusBeforeSort.focus();
 					fixDialogFocus(dialog, focusBeforeSort);
@@ -131,7 +131,7 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 
 			$element.off('click', '.ui-icon-close').on('click', '.ui-icon-close', function (e) {
 				$(this).closest('li').remove();
-				fixTabOrder(dialog);
+				// fixTabOrder(dialog);
 			});
 
 			$element.off('click', '.hottextinteraction-fixed').on('click', '.hottextinteraction-fixed', function (e) {
@@ -208,7 +208,7 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 									if (choices[i].fixed)
 										row.find('.hottextinteraction-fixed').toggleClass('ui-icon-locked ui-icon-unlocked');
 								}
-								addNewChoice($element, false);
+								//addNewChoice($element, false);
 							}
 
 							// If this is a new instance, add some blank rows.
@@ -216,7 +216,7 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 								for (var i=0; i<1; ++i)
 									addNewChoice($element, true);
 
-							fixTabOrder(this.getDialog());
+							// fixTabOrder(this.getDialog());
 						},
 						commit: function (widget) {
 							var $element = $('#' + this.domId);

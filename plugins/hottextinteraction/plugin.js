@@ -85,14 +85,14 @@ CKEDITOR.plugins.add('hottextinteraction', {
 				var choices = [];
 				for (var i=0; i<element.children.length; ++i) {	
 					var childElement = element.children[i];
-					if (childElement instanceof CKEDITOR.htmlParser.element && childElement.name == 'inlinechoice') {
+					if (childElement instanceof CKEDITOR.htmlParser.element && childElement.name == 'hottext') {
 						var choice = { text: '' };
 
 						if (childElement.attributes) {
 							if ('identifier' in childElement.attributes)
 								choice.identifier = childElement.attributes.identifier;
-							if ('fixed' in childElement.attributes)
-								choice.fixed = childElement.attributes.fixed;
+							//if ('fixed' in childElement.attributes)
+							//	choice.fixed = childElement.attributes.fixed;
 						}
 
 						if (childElement.children.length > 0) {
@@ -112,26 +112,32 @@ CKEDITOR.plugins.add('hottextinteraction', {
             downcast: function (element) {
 				var hottextinteractionElement = new CKEDITOR.htmlParser.element('hottextinteraction');
 
-				if (this.data && this.data.interactionData && this.data.interactionData.responseDeclaration)
-					hottextinteractionElement.attributes['data-responsedeclaration'] = JSON.stringify(this.data.interactionData.responseDeclaration);
+				//if (this.data && this.data.interactionData && this.data.interactionData.responseDeclaration)
+				//	hottextinteractionElement.attributes['data-responsedeclaration'] = JSON.stringify(this.data.interactionData.responseDeclaration);
 
 				//if (this.data && this.data.interactionData && 'shuffle' in this.data.interactionData)
 				//	hottextinteractionElement.attributes['data-shuffle'] = JSON.stringify(this.data.interactionData.shuffle);
-
+				var inlineChoiceElement = null;
 				if (this.data && this.data.interactionData && this.data.interactionData.choices) {
 					var choices = this.data.interactionData.choices;
+					var isCorrectResponse = false;
+					if(this.data.interactionData.responseDeclaration && this.data.interactionData.responseDeclaration.correctResponse)
+						isCorrectResponse = true;
+					
 					for (var i=0; i<choices.length; ++i) {
 						var choice = choices[i];
 						var attributes = { identifier: choice.identifier };
-						if (choice.fixed)
-							attributes.fixed = true;
-						var inlineChoiceElement = new CKEDITOR.htmlParser.element('inlinechoice', attributes);
+						//if (choice.fixed)
+						//	attributes.fixed = true;
+						inlineChoiceElement = new CKEDITOR.htmlParser.element('hottext', attributes);
 						inlineChoiceElement.add(new CKEDITOR.htmlParser.text(choice.text));
-						hottextinteractionElement.add(inlineChoiceElement);
+						if(isCorrectResponse)
+							inlineChoiceElement.addClass("isCorrect-true");
+						
 					}
 				}
 
-				return hottextinteractionElement;
+				return inlineChoiceElement;
             },
 
             init: function () {
@@ -154,7 +160,7 @@ CKEDITOR.plugins.add('hottextinteraction', {
 						description = '<i>No answers</i>';
 						break;
 					case 1:
-						description = '<i>One answer</i>';
+						description = '<i>'+this.data.interactionData.choices[0].text+'</i>';
 						break;
 					default:
 						description = '<i>' + this.data.interactionData.choices.length + ' possible answers</i>';
