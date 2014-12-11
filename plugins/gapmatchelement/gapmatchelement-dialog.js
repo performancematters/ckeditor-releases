@@ -1,20 +1,22 @@
 CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 	var choiceTemplate =
-		'<li>' +
-			'<a href="#" class="gapmatchelement-correctness gapmatchelement-eee gapmatchelement-incorrect">' +
+		'<tr>' +
+			'<td class="gapmatchelement-correctness gapmatchelement-eee gapmatchelement-incorrect  gapmatchelement-correct">' +
 				'<span class="icon"></span>' +
 				'<span class="label"></span>' +
-			'</a>' +
+			'</td>' +
+			'<td>' +
 			'<input class="gapmatchelement-textinput" type="text" disabled>' +
-		'</li>';
+			'</td>' +
+		'</tr>';
 
 	function randomIdentifier() {
 		return "ABCDEFGHJKMNPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 23)) + Math.floor(Math.random() * 1e8);
 	}
 
 	function showHidePoints(instance, show) {
-		instance.find('.inlinechoiceinteraction-points').css('visibility', show ? '' : 'hidden');
+		instance.find('.gapmatchelementinteraction-points').css('visibility', show ? '' : 'hidden');
 	}
 
 
@@ -25,16 +27,17 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		/*
 		var mapping = false;
 		if (mapping)
-			newChoice.find('.inlinechoiceinteraction-points').css('visibility', 'hidden');
+			newChoice.find('.gapmatchelementinteraction-points').css('visibility', 'hidden');
 		*/
 		newChoice.find('.gapmatchelement-textinput').val(text);
 		newChoice.find('.gapmatchelement-textinput').attr('data-identifier', id);
 		if (!mappingFlag) {
-			newChoice.find('.gapmatchelement-correctness').toggleClass('inlinechoiceinteraction-correct', score);
-			newChoice.find('.gapmatchelement-correctness').toggleClass('inlinechoiceinteraction-incorrect', score);
+			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-correct', score);
+			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-incorrect', !score);
+			console.log("hello");
 		}
 
-		$element.find('ul').append(newChoice);
+		$element.find('.gapmatchelement-score-table > tbody').append(newChoice);
 		return newChoice;
 	}
 
@@ -177,7 +180,15 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 						type: 'html',
 						html: '<div class="gapmatchelement-dialog">' +
 							'<div class="gapmatchelement-header">Correct Response</div>' +
-							'<ul></ul>' +
+									'<table class="gapmatchelement-score-table">' +
+									'<thead>' +
+									'<tr>' +
+										'<th class="gapmatchelement-header-score">Score</th>' +
+										'<th>Answer</th>' +
+									'</tr>' +
+									'</thead>' +
+									'<tbody>' +
+									'</tbody></table>' +
 							'</div>',
 						setup: function (widget) {
 							var $element = $('#' + this.domId);
@@ -188,7 +199,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
 
 								// Clear choices and build a new list
-								$element.find('ul').empty();
+								$element.find('tbody').empty();
 
 								// Perform a one time validation check for loading existing data.
 								var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
