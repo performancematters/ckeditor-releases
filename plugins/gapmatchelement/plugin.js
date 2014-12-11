@@ -94,30 +94,6 @@ CKEDITOR.plugins.add('gapmatchelement', {
                 outer.add(label);
                 outer.add(content);
 
-				var choices = [];
-				for (var i=0; i<element.children.length; ++i) {
-					var childElement = element.children[i];
-					if (childElement instanceof CKEDITOR.htmlParser.element && childElement.name == 'gaptext') {
-						var choice = { text: '' };
-
-						if (childElement.attributes) {
-							if ('identifier' in childElement.attributes)
-								choice.identifier = childElement.attributes.identifier;
-							if ('matchmax' in childElement.attributes)
-								choice.fixed = childElement.attributes.matchmax;
-						}
-
-						if (childElement.children.length > 0) {
-							var textElement = childElement.children[0];
-							if (textElement instanceof CKEDITOR.htmlParser.text)
-								choice.text = textElement.value;
-						}
-
-						choices.push(choice);
-					}
-				}
-				data.interactionData.choices = choices;
-
                 return outer;
             },
 
@@ -214,7 +190,7 @@ CKEDITOR.plugins.add('gapmatchelement', {
                         // if single cardinality convert correctResponse into array,
                         // then iterate correctResponse to match on this particular gap Element identifier.
                         var correctResponse = this.data.interactionData.responseDeclaration.correctResponse;
-                        var answerList = (typeof correctResponse === 'string') ? [correctResponse] : correctResponse;
+                        var answerList = (typeof correctResponse == 'string') ? [correctResponse] : correctResponse;
                         for (i = 0; i < answerList.length; i++) {
                             var answer = answerList[i];
                             if (answer.indexOf(widgetIdentifier) > -1) {

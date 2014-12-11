@@ -27,17 +27,19 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	function addNewChoice($element, text, id, mappingFlag, score, defaultValue) {
 		var newChoice = $(choiceTemplate);
 		newChoice.find('.gapmatchelement-textinput').val(text);
-		newChoice.find('.gapmatchelement-textinput').attr('data-identifier', id);
+		newChoice.find('.gapmatchelement-correctness').attr('data-identifier', id);
 		if (!mappingFlag) {
 			newChoice.find('.gapmatchelement-mapping').hide();
 			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-correct', score);
 			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-incorrect', !score);
 		} else {
 			newChoice.find('.gapmatchelement-correctness').hide();
+			newChoice.find('.gapmatchelement-points').attr('data-identifier', id);
 			if (typeof(score) == 'string')
 				newChoice.find('.gapmatchelement-points').val(score)
 			if (typeof(defaultValue) == 'string')
 				newChoice.find('.gapmatchelement-points').attr('placeholder', defaultValue);
+
 		}
 
 		$element.find('.gapmatchelement-score-table > tbody').append(newChoice);
@@ -90,19 +92,39 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		if (scoreData != null) {
 			for (var i=0; i<scoreData.length; ++i) {
 				var answer = scoreData[i];
-				if (mappingFlag) {
-					if (answer.mapKey.indexOf(widgetIdentifier) > -1) {
-						if (choiceIdentifier == answer.mapKey.replace(widgetIdentifier, "").trim()) {
-							return answer.mappedValue;
-						}
+				if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) > -1)) {
+					if (choiceIdentifier == answer.mapKey.replace(widgetIdentifier, "").trim()) {
+						return answer.mappedValue;
 					}
-				} else {
-					if (answer.indexOf(widgetIdentifier) > -1) {
-						answer = answer.replace(widgetIdentifier, "").trim();
-						if (answer == choiceIdentifier) {
-							return true;
-						}
+				} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) > -1)) {
+					if (choiceIdentifier == answer.replace(widgetIdentifier, "").trim()) {
+						return true;
 					}
+				}
+			}
+		}
+		return result;
+	}
+
+
+
+
+	    /**
+     * Get score for choiceIdentifier
+     * @param {String} widgetIdentifier
+     * @param {boolean} mappingFlag
+     * @param {Array} scoreData
+     * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
+     */
+	function removeAllPreviousDirectedPairsForWidgetIdentifier(widgetIdentifier, mappingFlag, scoreData) {
+		var result = [];
+		if (scoreData != null) {
+			for (var i=0; i<scoreData.length; ++i) {
+				var answer = scoreData[i];
+				if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) == -1)) {
+					result.push(answer);
+				} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) == -1)) {
+					result.push(answer);
 				}
 			}
 		}
@@ -204,6 +226,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								var gapText = JSON.parse(widget.data.gapText);
 								var choiceObj = getChoiceObj(gapText);
 								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
+								var template = (gapProps.points && gapProps.points == 'false') ? 'match_correct' : 'map_response';
 
 								// Clear choices and notes; and build a new list
 								$element.find('tbody').empty();
@@ -215,6 +238,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 								// Set/Load the gap match element identifier
 								var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
+								widget.setData('widgetIdentifier', widgetIdentifier);
 
 								// Update heading for "point value scoring"
 								if (mappingFlag) {
@@ -242,42 +266,87 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 									$element.find('.gapmatchelement-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
 								if (gapProps.lowerBound)
 									$element.find('.gapmatchelement-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
+								if (gapProps.upperBound)
+									$element.find('.gapmatchelement-notes').append('<div>Upper Bound: ' + gapProps.upperBound + '</div>');
 
 								//fixTabOrder(this.getDialog());
 							}
 						},
 						commit: function (widget) {
 							var $element = $('#' + this.domId);
+
 							if ( widget.data.gapProps && widget.data.gapText ) {
 								var gapProps = JSON.parse(widget.data.gapProps);
 								var gapText = JSON.parse(widget.data.gapText);
-								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
+								var template = (gapProps.points && gapProps.points == 'false') ? 'match_correct' : 'map_response';
 
-								var choices = [];
-								var identifierOfCorrectResponse = null;
-								$element.find('li').each(function () {
-									var input = $(this).find('.gapmatchelement-textinput');
-									var text = input.val().trim();
-									if (text.length > 0) {
-										var identifier = input.attr('data-identifier') || randomIdentifier();
-										var gapMatchChoice = { identifier: identifier, text: text };
-										choices.push(gapMatchChoice);
-
-										var correct = $(this).find('.gapmatchelement-correct').length == 1;
-										if (correct)
-											identifierOfCorrectResponse = input.attr('data-identifier');
+								// Perform a one time validation check for loading existing data.
+								var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
+													&& widget.data.interactionData.responseDeclaration);
+								// Prep for loading existing score data
+								var scoreData = null;
+								if (existingData) {
+									if (widget.data.interactionData.responseDeclaration.correctResponse) {
+										scoreData = widget.data.interactionData.responseDeclaration.correctResponse;
+									} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
+										scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
 									}
-								});
-
-								var gapScore = ["W G1","Su G2"];
+								}
 
 								var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single' };
-								if (identifierOfCorrectResponse != null)
-									responseDeclaration.correctResponse = identifierOfCorrectResponse;
+
+								// Get the existing result, if exists, and remove an directedPair for this widgetIdentifier
+								var widgetIdentifier = widget.data.widgetIdentifier;
+								var scoreResult = removeAllPreviousDirectedPairsForWidgetIdentifier(widgetIdentifier, (template=='map_response'), scoreData);
+
+								// Retrieve the score for this widgetIdentifier, and add it to the scoreResult
+								switch (template) {
+								case 'match_correct':
+									$element.find('.gapmatchelement-correct').each(function () {
+										scoreResult.push($(this).attr('data-identifier') + " " + widgetIdentifier);
+									});
+									responseDeclaration.correctResponse = (scoreResult.length == 1) ? scoreResult[0] : scoreResult;
+									break;
+
+								case 'map_response':
+									var mapping = {};
+									if (gapProps.defaultValue)
+										mapping.defaultValue = gapProps.defaultValue;
+									if (gapProps.lowerBound)
+										mapping.lowerBound = gapProps.lowerBound;
+									if (gapProps.upperBound)
+										mapping.upperBound = gapProps.upperBound;
+									$element.find('.gapmatchelement-points').each(function () {
+										var points = ($(this).val().trim().length > 0) ? parseInt($(this).val()) : null;
+										if (typeof(points) == 'number') {
+											// Rule out a score of defaultValue
+											var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
+											if (defaultValue != null && (points == parseInt(defaultValue))) {
+												points = null;
+											}
+											if (points != null) {
+												var mapKey = widgetIdentifier + " " + $(this).attr('data-identifier');
+												var mappedValue = $(this).val().trim();
+												scoreResult.push({ mapKey: mapKey, mappedValue: mappedValue });
+											}
+										}
+									});
+									if (scoreResult.length > 0) {
+										mapping.mapEntry = (scoreResult.length == 1) ? scoreResult[0] : scoreResult;
+										responseDeclaration.mapping = mapping;
+									}
+									break;
+
+								default:
+									throw new Error("Unimplemented");
+								}
+
+								// Adjust cardinality if necessary
+								responseDeclaration.cardinality = (scoreResult.length > 1) ? 'multiple' : 'single';
 
 								widget.setData('interactionData', {
-									responseDeclaration: responseDeclaration,
-									gapScore: gapScore
+									identifier: widgetIdentifier,
+									responseDeclaration: responseDeclaration
 								});
 							}
 						}
