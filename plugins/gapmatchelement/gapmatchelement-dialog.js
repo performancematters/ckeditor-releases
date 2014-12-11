@@ -2,6 +2,9 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 	var choiceTemplate =
 		'<tr>' +
+			'<td class="gapmatchelement-mapping">' +
+				'<input class="gapmatchelement-points" type="text">' +
+			'</td>' +
 			'<td class="gapmatchelement-correctness gapmatchelement-eee gapmatchelement-incorrect  gapmatchelement-correct">' +
 				'<span class="icon"></span>' +
 				'<span class="label"></span>' +
@@ -21,20 +24,20 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 
 
-	function addNewChoice($element, text, id, mappingFlag, score) {
+	function addNewChoice($element, text, id, mappingFlag, score, defaultValue) {
 		var newChoice = $(choiceTemplate);
-		// TODO: Load point values
-		/*
-		var mapping = false;
-		if (mapping)
-			newChoice.find('.gapmatchelementinteraction-points').css('visibility', 'hidden');
-		*/
 		newChoice.find('.gapmatchelement-textinput').val(text);
 		newChoice.find('.gapmatchelement-textinput').attr('data-identifier', id);
 		if (!mappingFlag) {
+			newChoice.find('.gapmatchelement-mapping').hide();
 			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-correct', score);
 			newChoice.find('.gapmatchelement-correctness').toggleClass('gapmatchelement-incorrect', !score);
-			console.log("hello");
+		} else {
+			newChoice.find('.gapmatchelement-correctness').hide();
+			if (typeof(score) == 'string')
+				newChoice.find('.gapmatchelement-points').val(score)
+			if (typeof(defaultValue) == 'string')
+				newChoice.find('.gapmatchelement-points').attr('placeholder', defaultValue);
 		}
 
 		$element.find('.gapmatchelement-score-table > tbody').append(newChoice);
@@ -83,13 +86,16 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
      * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
      */
 	function getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier) {
-		// the default score for correctResponse is false; for mapping it is null.
 		var result = (mappingFlag) ? null : false;
 		if (scoreData != null) {
 			for (var i=0; i<scoreData.length; ++i) {
 				var answer = scoreData[i];
 				if (mappingFlag) {
-
+					if (answer.mapKey.indexOf(widgetIdentifier) > -1) {
+						if (choiceIdentifier == answer.mapKey.replace(widgetIdentifier, "").trim()) {
+							return answer.mappedValue;
+						}
+					}
 				} else {
 					if (answer.indexOf(widgetIdentifier) > -1) {
 						answer = answer.replace(widgetIdentifier, "").trim();
@@ -179,16 +185,17 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 						id: 'correctAnswerControls',
 						type: 'html',
 						html: '<div class="gapmatchelement-dialog">' +
-							'<div class="gapmatchelement-header">Correct Response</div>' +
-									'<table class="gapmatchelement-score-table">' +
-									'<thead>' +
-									'<tr>' +
-										'<th class="gapmatchelement-header-score">Score</th>' +
-										'<th>Answer</th>' +
-									'</tr>' +
-									'</thead>' +
-									'<tbody>' +
-									'</tbody></table>' +
+								'<div class="gapmatchelement-header">Correct Response</div>' +
+								'<table class="gapmatchelement-score-table">' +
+								'<thead>' +
+								'<tr>' +
+									'<th class="gapmatchelement-header-score">Score</th>' +
+									'<th>Answer</th>' +
+								'</tr>' +
+								'</thead>' +
+								'<tbody>' +
+								'</tbody></table>' +
+								'<div class="gapmatchelement-notes"></div>' +
 							'</div>',
 						setup: function (widget) {
 							var $element = $('#' + this.domId);
@@ -198,8 +205,9 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								var choiceObj = getChoiceObj(gapText);
 								var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
 
-								// Clear choices and build a new list
+								// Clear choices and notes; and build a new list
 								$element.find('tbody').empty();
+								$element.find('.gapmatchelement-notes').empty();
 
 								// Perform a one time validation check for loading existing data.
 								var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
@@ -226,8 +234,14 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								for (var choiceIdentifier in choiceObj) {
 									// Get either the boolean/point value for existing score data, if exists.
 									var score = getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier);
-									var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, mappingFlag, score);
+									var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
+									var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, mappingFlag, score, defaultValue);
 								}
+
+								if (gapProps.defaultValue)
+									$element.find('.gapmatchelement-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
+								if (gapProps.lowerBound)
+									$element.find('.gapmatchelement-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
 
 								//fixTabOrder(this.getDialog());
 							}

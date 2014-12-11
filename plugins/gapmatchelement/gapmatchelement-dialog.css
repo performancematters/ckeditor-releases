@@ -92,6 +92,14 @@
 	width: 100%;
 }
 
+.gapmatchelement-points {
+	border: 1px solid #aaa;
+	padding: 4px;
+	width: 68px;
+    font-weight: 150%;
+    text-align:center;
+}
+
 .gapmatchelement-rowcontrols {
 	position: absolute;
 	width: 26px;
@@ -116,6 +124,12 @@
 	background-position: -80px -128px; /* Ouch */
 }
 
+.gapmatchelement-notes {
+	margin-top:20px;
+}
+.gapmatchelement-notes > div {
+	margin-top:5px;
+}
 
 /* Local Variables: */
 /* tab-width: 4 */
