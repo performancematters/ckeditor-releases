@@ -1,5 +1,5 @@
 CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
-
+	var firstFocusIndex = null;
 	var choiceTemplate =
 		'<tr>' +
 			'<td class="gapmatchelement-mapping">' +
@@ -18,13 +18,18 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		return "ABCDEFGHJKMNPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 23)) + Math.floor(Math.random() * 1e8);
 	}
 
-	function showHidePoints(instance, show) {
-		instance.find('.gapmatchelementinteraction-points').css('visibility', show ? '' : 'hidden');
-	}
-
-
-
+    /**
+     * Get score for choiceIdentifier
+     * @param {jQuery selector} $element
+     * @param {String} text of answer choice
+     * @param {String} id of answer choice
+     * @param {boolean} mappingFlag
+     * @param {boolean/string} score (correctResponse/points)
+     * @param {String} defaultValue
+     * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
+     */
 	function addNewChoice($element, text, id, mappingFlag, score, defaultValue) {
+
 		var newChoice = $(choiceTemplate);
 		newChoice.find('.gapmatchelement-textinput').val(text);
 		newChoice.find('.gapmatchelement-correctness').attr('data-identifier', id);
@@ -44,39 +49,6 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 		$element.find('.gapmatchelement-score-table > tbody').append(newChoice);
 		return newChoice;
-	}
-
-	function fixTabOrder(dialog) {
-		var element = dialog.getContentElement('tab-gapmatchelement', 'correctAnswerControls');
-		var $element = $(element.getElement().$);
-		var focusIndex = 0;
-
-		// Remove all our own inputs from focusList leaving only ok and cancel buttons.
-		dialog._.focusList.splice(0, dialog._.focusList.length-2);
-
-		// Add our inputs back in
-		$element.find('li').each(function () {
-			if (!$(this).is('.gapmatchelement-inactive'))
-				dialog.addFocusable(new CKEDITOR.dom.element($(this).find('.gapmatchelement-correctness')[0]), focusIndex++);
-			dialog.addFocusable(new CKEDITOR.dom.element($(this).find('.gapmatchelement-textinput')[0]), focusIndex++);
-		});
-
-		var addPointValue = $element.find('.gapmatchelement-addpointvalue');
-		//dialog.addFocusable(new CKEDITOR.dom.element(addPointValue[0]), focusIndex++);
-
-		// Must fix focusIndex of every focusable item.
-		for (var i=0; i<dialog._.focusList.length; ++i)
-			dialog._.focusList[i].focusIndex = i;
-	}
-
-	function fixDialogFocus(dialog, newFocus) {
-		for (var i=0; i<dialog._.focusList.length; ++i) {
-			var focusable = dialog._.focusList[i];
-			if (focusable.element && focusable.element.$ == newFocus) {
-				dialog._.currentFocusIndex = i;
-				return;
-			}
-		}
 	}
 
     /**
@@ -106,10 +78,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		return result;
 	}
 
-
-
-
-	    /**
+	/**
      * Get score for choiceIdentifier
      * @param {String} widgetIdentifier
      * @param {boolean} mappingFlag
@@ -144,57 +113,38 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 		return result;
 	}
 
+	function loadTabFocus(dialog, $element) {
+		var focusIndex = 0;
+		var element = dialog.getContentElement('tab-gapmatchelement', 'correctAnswerControls');
+
+		var mapEntries = $(element.getElement().$).find('input.gapmatchelement-points');
+		mapEntries.each(function () {
+			dialog.addFocusable(new CKEDITOR.dom.element($(this)[0]), focusIndex++);
+		});
+
+		$element.off('keypress', '.gapmatchelement-correctness').on('keypress', '.gapmatchelement-correctness', function (e) {
+			if (e.charCode == 32)
+				$(this).click();
+		});
+	}
+
     return {
 		title: 'Gap Match Element',
 		minWidth: 400,
 		minHeight: 300,
 
 		onLoad: function (evt) {
-			var dialog = this;
-			var element = dialog.getContentElement('tab-gapmatchelement', 'correctAnswerControls');
-			var $element = $(element.getElement().$);
-
-			$element.off('click', '.gapmatchelement-correctness').on('click', '.gapmatchelement-correctness', function (e) {
-				if ($(this).closest('li').is('.gapmatchelement-inactive'))
-					return false;
-
-				// If going from incorrect to correct, then move any other rows marked correct to incorrect.
-				if ($(this).is('.gapmatchelement-incorrect'))
-					$element.find('.gapmatchelement-correct').toggleClass('gapmatchelement-correct gapmatchelement-incorrect');
-				$(this).toggleClass('gapmatchelement-correct gapmatchelement-incorrect');
-
-				this.focus();
-
-				return false;
-			});
-
-			$element.off('keypress', '.gapmatchelement-correctness').on('keypress', '.gapmatchelement-correctness', function (e) {
-				if (e.charCode == 32)
-					$(this).click();
-			});
-
-			$element.off('click', '.ui-icon-close').on('click', '.ui-icon-close', function (e) {
-				$(this).closest('li').remove();
-				fixTabOrder(dialog);
-			});
-
-			$element.off('click', '.gapmatchelement-addpointvalue').on('click', '.gapmatchelement-addpointvalue', function (e) {
-				showHidePoints($element, this.checked);
-			});
-
-			$element
-				.off('focus', '.gapmatchelement-correctness,.gapmatchelement-textinput,.gapmatchelement-addpointvalue')
-				.on('focus', '.gapmatchelement-correctness,.gapmatchelement-textinput,.gapmatchelement-addpointvalue', function (e) {
-				fixDialogFocus(dialog, this);
-			});
 		},
 
 		onFocus: function () {
 			var dialog = this;
 			var element = dialog.getContentElement('tab-gapmatchelement', 'correctAnswerControls');
-			var firstTextInput = $(element.getElement().$).find('.gapmatchelement-textinput')[0];
-			dialog._.currentFocusIndex = 0;
-			return firstTextInput;
+			var points = $(element.getElement().$).find('input.gapmatchelement-points')[0];
+			if (points) {
+				dialog._.currentFocusIndex = firstFocusIndex;
+				return points;
+			}
+			else return false;
 		},
 
 		contents: [
@@ -240,9 +190,16 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
 								widget.setData('widgetIdentifier', widgetIdentifier);
 
-								// Update heading for "point value scoring"
-								if (mappingFlag) {
+								// Map_Response addjustments
+								if (template == 'map_response') {
 									$element.find('.gapmatchelement-header').html("Point Value Scoring");
+
+								if (gapProps.defaultValue)
+									$element.find('.gapmatchelement-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
+								if (gapProps.lowerBound)
+									$element.find('.gapmatchelement-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
+								if (gapProps.upperBound)
+									$element.find('.gapmatchelement-notes').append('<div>Upper Bound: ' + gapProps.upperBound + '</div>');
 								}
 
 								// Prep for loading existing score data
@@ -257,19 +214,12 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 
 								for (var choiceIdentifier in choiceObj) {
 									// Get either the boolean/point value for existing score data, if exists.
-									var score = getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier);
+									var score = getScore(widgetIdentifier, (template=='map_response'), scoreData, choiceIdentifier);
 									var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
-									var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, mappingFlag, score, defaultValue);
+									var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, (template=='map_response'), score, defaultValue, this.getDialog());
 								}
 
-								if (gapProps.defaultValue)
-									$element.find('.gapmatchelement-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
-								if (gapProps.lowerBound)
-									$element.find('.gapmatchelement-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
-								if (gapProps.upperBound)
-									$element.find('.gapmatchelement-notes').append('<div>Upper Bound: ' + gapProps.upperBound + '</div>');
-
-								//fixTabOrder(this.getDialog());
+								loadTabFocus(this.getDialog(),$element);
 							}
 						},
 						commit: function (widget) {
@@ -293,7 +243,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 									}
 								}
 
-								var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single' };
+								var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier' };
 
 								// Get the existing result, if exists, and remove an directedPair for this widgetIdentifier
 								var widgetIdentifier = widget.data.widgetIdentifier;
@@ -319,7 +269,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 									$element.find('.gapmatchelement-points').each(function () {
 										var points = ($(this).val().trim().length > 0) ? parseInt($(this).val()) : null;
 										if (typeof(points) == 'number') {
-											// Rule out a score of defaultValue
+											// Remove a hardcoded score equal to defaultValue
 											var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
 											if (defaultValue != null && (points == parseInt(defaultValue))) {
 												points = null;
@@ -341,7 +291,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 									throw new Error("Unimplemented");
 								}
 
-								// Adjust cardinality if necessary
+								// This is not the final cardinality result, since all the gapMatchElement are cumulative.
 								responseDeclaration.cardinality = (scoreResult.length > 1) ? 'multiple' : 'single';
 
 								widget.setData('interactionData', {
