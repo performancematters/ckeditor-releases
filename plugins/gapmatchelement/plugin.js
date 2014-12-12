@@ -13,7 +13,7 @@ CKEDITOR.plugins.add('gapmatchelement', {
     // The plugin initialization logic goes inside this method.
     init: function (editor) {
         var href = this.path + "gapmatchelement-dialog.css";
-        if ($('link[href="' + href + '"]').length == 0) {
+        if ($('link[href="' + href + '"]').length === 0) {
             var cssLink = $("<link rel='stylesheet' type='text/css' href='" + href + "'>");
             $("head").append(cssLink);
         }
@@ -150,7 +150,7 @@ CKEDITOR.plugins.add('gapmatchelement', {
 					var description;
                     var gapPropsObj = JSON.parse(this.data.gapProps);
                     var gapTextArray = JSON.parse(this.data.gapText);
-                    var mappingFlag = (gapPropsObj.points && gapPropsObj.points == 'false') ? false : true;
+                    var mappingFlag = (gapPropsObj.points && gapPropsObj.points === 'false') ? false : true;
                     var responseCount = 0;
                     if (mappingFlag) {
                         // Iterate to count answers for this particular gap Element (widgetIdentifier)
@@ -161,10 +161,10 @@ CKEDITOR.plugins.add('gapmatchelement', {
                             if (mapEntry.mapKey.indexOf(widgetIdentifier) > -1) {
                                 mapGapElementCount++;
                                 // Don't bother redefining a single answer, if there are multiple answers.
-                                if (mapGapElementCount == 1) {
+                                if (mapGapElementCount === 1) {
                                     answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
                                     for (k = 0; k < gapTextArray.length; k++) {
-                                        if (gapTextArray[k].identifier == answer) {
+                                        if (gapTextArray[k].identifier === answer) {
                                             var value = parseInt(mapEntry.mappedValue);
                                             description = '<i>' + gapTextArray[k].value + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
                                             break;
@@ -190,13 +190,13 @@ CKEDITOR.plugins.add('gapmatchelement', {
                         // if single cardinality convert correctResponse into array,
                         // then iterate correctResponse to match on this particular gap Element identifier.
                         var correctResponse = this.data.interactionData.responseDeclaration.correctResponse;
-                        var answerList = (typeof correctResponse == 'string') ? [correctResponse] : correctResponse;
+                        var answerList = (typeof correctResponse === 'string') ? [correctResponse] : correctResponse;
                         for (i = 0; i < answerList.length; i++) {
                             var answer = answerList[i];
                             if (answer.indexOf(widgetIdentifier) > -1) {
                                 answer = answer.replace(widgetIdentifier, "").trim();
                                 for (k = 0; k < gapTextArray.length; k++) {
-                                    if (gapTextArray[k].identifier == answer) {
+                                    if (gapTextArray[k].identifier === answer) {
                                         description = '<i>' + gapTextArray[k].value + '</i>';
                                         break;
                                     }

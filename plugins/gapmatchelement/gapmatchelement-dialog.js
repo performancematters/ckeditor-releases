@@ -40,7 +40,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	} else {
 	    newChoice.find('.gapmatchelement-correctness').hide();
 	    newChoice.find('.gapmatchelement-points').attr('data-identifier', id);
-	    if (typeof(score) == 'string')
+	    if (typeof(score) === 'string')
 		newChoice.find('.gapmatchelement-points').val(score);
 	    if (defaultValue)
 	    	newChoice.find('.gapmatchelement-points').attr('data-default', defaultValue);
@@ -64,11 +64,11 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	    for (var i=0; i<scoreData.length; ++i) {
 		var answer = scoreData[i];
 		if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) > -1)) {
-		    if (choiceIdentifier == answer.mapKey.replace(widgetIdentifier, "").trim()) {
+		    if (choiceIdentifier === answer.mapKey.replace(widgetIdentifier, "").trim()) {
 			return answer.mappedValue;
 		    }
 		} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) > -1)) {
-		    if (choiceIdentifier == answer.replace(widgetIdentifier, "").trim()) {
+		    if (choiceIdentifier === answer.replace(widgetIdentifier, "").trim()) {
 			return true;
 		    }
 		}
@@ -89,9 +89,9 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	if (scoreData != null) {
 	    for (var i=0; i<scoreData.length; ++i) {
 		var answer = scoreData[i];
-		if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) == -1)) {
+		if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) === -1)) {
 		    result.push(answer);
-		} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) == -1)) {
+		} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) === -1)) {
 		    result.push(answer);
 		}
 	    }
@@ -122,7 +122,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	});
 
 	$element.off('keypress', '.gapmatchelement-correctness').on('keypress', '.gapmatchelement-correctness', function (e) {
-	    if (e.charCode == 32)
+	    if (e.charCode === 32)
 		$(this).click();
 	});
     }
@@ -152,7 +152,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 	    });
 
 	    $element.off('keypress', '.gapmatchelement-correctness').on('keypress', '.gapmatchelement-correctness', function (e) {
-		if (e.charCode == 32)
+		if (e.charCode === 32)
 		    $(this).click();
 	    });
 	},
@@ -192,7 +192,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 			    '</div>',
 			validate: function (widget) {
 			    var instance = $('#' + this.domId);
-			    var template = (instance.find('.gapmatchelement-header').text() == 'Correct Response') ? 'match_correct' : 'map_response';
+			    var template = (instance.find('.gapmatchelement-header').text() === 'Correct Response') ? 'match_correct' : 'map_response';
 			    switch (template) {
 			    case 'match_correct':
 				var correctAnswer = instance.find('.gapmatchelement-correct');
@@ -217,8 +217,8 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 				var gapProps = JSON.parse(widget.data.gapProps);
 				var gapText = JSON.parse(widget.data.gapText);
 				var choiceObj = getChoiceObj(gapText);
-				var mappingFlag = (gapProps.points && gapProps.points == 'false') ? false : true;
-				var template = (gapProps.points && gapProps.points == 'false') ? 'match_correct' : 'map_response';
+				var mappingFlag = (gapProps.points && gapProps.points === 'false') ? false : true;
+				var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
 
 				// Clear choices and notes; and build a new list
 				$element.find('tbody').empty();
@@ -233,7 +233,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 				widget.setData('widgetIdentifier', widgetIdentifier);
 
 				// Map_Response addjustments
-				if (template == 'map_response') {
+				if (template === 'map_response') {
 					$element.find('.gapmatchelement-header').html("Point Value Scoring");
 
 				if (gapProps.defaultValue)
@@ -252,14 +252,14 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 					} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
 						scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
 					}
-					scoreData = (typeof(scoreData) == 'string') ? [scoreData] : scoreData;
+					scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
 				}
 
 				for (var choiceIdentifier in choiceObj) {
 					// Get either the boolean/point value for existing score data, if exists.
-					var score = getScore(widgetIdentifier, (template=='map_response'), scoreData, choiceIdentifier);
+					var score = getScore(widgetIdentifier, (template==='map_response'), scoreData, choiceIdentifier);
 					var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
-					var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, (template=='map_response'), score, defaultValue, this.getDialog());
+					var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, (template==='map_response'), score, defaultValue, this.getDialog());
 				}
 
 				loadTabFocus(this.getDialog(),$element);
@@ -271,7 +271,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 			    if ( widget.data.gapProps && widget.data.gapText ) {
 				    var gapProps = JSON.parse(widget.data.gapProps);
 				    var gapText = JSON.parse(widget.data.gapText);
-				    var template = (gapProps.points && gapProps.points == 'false') ? 'match_correct' : 'map_response';
+				    var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
 
 				    // Perform a one time validation check for loading existing data.
 				    var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
@@ -284,7 +284,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 					    } else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
 						    scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
 					    }
-					    scoreData = (typeof(scoreData) == 'string') ? [scoreData] : scoreData;
+					    scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
 				    }
 
 				    var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier' };
@@ -299,7 +299,7 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 					    $element.find('.gapmatchelement-correct').each(function () {
 						    scoreResult.push($(this).attr('data-identifier') + " " + widgetIdentifier);
 					    });
-					    responseDeclaration.correctResponse = (scoreResult.length == 1) ? scoreResult[0] : scoreResult;
+					    responseDeclaration.correctResponse = (scoreResult.length === 1) ? scoreResult[0] : scoreResult;
 					    break;
 
 				    case 'map_response':
@@ -312,10 +312,10 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 						    mapping.upperBound = gapProps.upperBound;
 					    $element.find('.gapmatchelement-points').each(function () {
 						    var points = ($(this).val().trim().length > 0) ? parseInt($(this).val()) : null;
-						    if (typeof(points) == 'number') {
+						    if (typeof(points) === 'number') {
 							    // Remove a hardcoded score equal to defaultValue
 							    var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
-							    if (defaultValue != null && (points == parseInt(defaultValue))) {
+							    if (defaultValue != null && (points === parseInt(defaultValue))) {
 								    points = null;
 							    }
 							    if (points != null) {
