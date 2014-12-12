@@ -192,6 +192,27 @@ CKEDITOR.dialog.add('gapmatchelement-dialog', function (editor) {
 								'</tbody></table>' +
 								'<div class="gapmatchelement-notes"></div>' +
 							'</div>',
+						validate: function (widget) {
+							var instance = $('#' + this.domId);
+							var template = (instance.find('.gapmatchelement-header').text() == 'Correct Response') ? 'match_correct' : 'map_response';
+							switch (template) {
+							case 'match_correct':
+								var correctAnswer = instance.find('.gapmatchelement-correct');
+								return CKEDITOR.dialog.validate.notEmpty("A correct answer is required.")(correctAnswer.toArray());
+
+							case 'map_response':
+								var points = instance.find('.gapmatchelement-points').map(function(){
+									if ($(this).val().trim())
+										if ($(this).attr('placeholder') && ($(this).val().trim() != $(this).attr('placeholder')))
+											return $(this).val();
+										else if (!$(this).attr('placeholder')) return $(this).val();
+								}).toArray();
+								return CKEDITOR.dialog.validate.notEmpty("A point value is required for at least one answer choice.")(points);
+
+							default:
+								throw new Error("Unimplemented");
+							}
+						},
 						setup: function (widget) {
 							var $element = $('#' + this.domId);
 							if ( widget.data.gapProps && widget.data.gapText ) {
