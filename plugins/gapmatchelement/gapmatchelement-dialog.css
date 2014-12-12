@@ -79,16 +79,15 @@
 .gapmatchelement-score-table > thead > tr > th {
     font-weight: 110%;
 	height: 20px;
-    text-align:center;
+	padding-left:10px;
 }
 
 .gapmatchelement-header-score {
 	width:68px;
 }
 
-.gapmatchelement-textinput {
-	border: 1px solid #aaa;
-	padding: 4px;
+.gapmatchelement-correct-text {
+	padding: 4px 4px 4px 10px;
 	width: 100%;
 }
 
