@@ -128,10 +128,10 @@ CKEDITOR.plugins.add('gapmatchelement', {
                     $(this.element.$).prepend('<span class="gapmatchelement-label" />');
 
                 // retrieve data on ckeditor instance, and set as widget data.
-                var gapProps = $(this.editor.element.$).attr('data-gapProps');
+                var gapProps = $(this.editor.element.$).closest('.qti-gmir-text').attr('data-gapProps');
                 if (gapProps)
                     this.setData('gapProps', gapProps);
-                var gapText = $(this.editor.element.$).attr('data-gapText');
+                var gapText = $(this.editor.element.$).closest('.qti-gmir-text').attr('data-gapText');
                 if (gapText)
                     this.setData('gapText', gapText);
 
