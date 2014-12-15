@@ -1,0 +1,135 @@
+.gap-header {
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.gap-eee {
+	color: #222;
+	background: #eee;
+	background: -ms-linear-gradient(top, #eee, #ddd);
+	background: -webkit-linear-gradient(top, #eee, #ddd);
+	background: -moz-linear-gradient(top, #eee, #ddd);
+	background: linear-gradient(top, #eee, #ddd);
+}
+
+.gap-dialog ul {
+	margin-left: 8px;
+}
+
+.gap-dialog li {
+	width: 400px;
+	position: relative;
+	height: 26px;
+	list-style-type: none;
+}
+
+.gap-correctness {
+	position: absolute;
+	width: 67px;
+	height: 24px;
+	display: table;
+	border-left: 2px solid transparent;
+}
+
+.gap-correctness > span.icon {
+	width: 16px;
+	height: 16px;
+	display: table-cell;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-position-x: 2px;
+	padding-left: 2px;
+	padding-right: 4px;
+}
+
+.gap-inactive .gap-correctness *,
+.gap-inactive .gap-rowcontrols * {
+	visibility: hidden;
+}
+
+.gap-correctness > span.label {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.gap-incorrect > span.icon {
+	background-image: url(images/red_x.png);
+}
+
+.gap-correct > span.icon {
+	background-image: url(images/greencheck.png);
+}
+
+.gap-incorrect > span.label:after {
+	content: "wrong";
+	color: red;
+}
+
+.gap-correct > span.label:after {
+	content: "correct";
+	color: green;
+}
+
+.gap-score-table {
+    border-collapse: collapse;
+	width:350px;
+}
+
+.gap-score-table > thead > tr > th {
+    font-weight: 110%;
+	height: 20px;
+	padding-left:10px;
+}
+
+.gap-header-score {
+	width:68px;
+}
+
+.gap-correct-text {
+	padding: 4px 4px 4px 10px;
+	width: 100%;
+}
+
+.gap-points {
+	border: 1px solid #aaa;
+	padding: 4px;
+	width: 68px;
+    font-weight: 150%;
+    text-align:center;
+}
+
+.gap-rowcontrols {
+	position: absolute;
+	width: 26px;
+	height: 24px;
+	right: 0;
+}
+
+.gap-dialog .ui-icon { /* Ouch */
+	background-image: url(images/ui-icons_222222_256x240.png);
+	position: absolute;
+	width: 16px;
+	height: 16px;
+}
+
+.gap-dialog .ui-icon:hover {
+	opacity: 1
+}
+
+.gap-dialog .ui-icon-close {
+	left: -2px;
+	top: -2px;
+	background-position: -80px -128px; /* Ouch */
+}
+
+.gap-notes {
+	margin-top:20px;
+}
+.gap-notes > div {
+	margin-top:5px;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
