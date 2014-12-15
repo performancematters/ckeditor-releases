@@ -1,9 +1,9 @@
-.gapmatchelement-header {
+.gap-header {
 	font-weight: bold;
 	margin-bottom: 15px;
 }
 
-.gapmatchelement-eee {
+.gap-eee {
 	color: #222;
 	background: #eee;
 	background: -ms-linear-gradient(top, #eee, #ddd);
@@ -12,18 +12,18 @@
 	background: linear-gradient(top, #eee, #ddd);
 }
 
-.gapmatchelement-dialog ul {
+.gap-dialog ul {
 	margin-left: 8px;
 }
 
-.gapmatchelement-dialog li {
+.gap-dialog li {
 	width: 400px;
 	position: relative;
 	height: 26px;
 	list-style-type: none;
 }
 
-.gapmatchelement-correctness {
+.gap-correctness {
 	position: absolute;
 	width: 67px;
 	height: 24px;
@@ -31,7 +31,7 @@
 	border-left: 2px solid transparent;
 }
 
-.gapmatchelement-correctness > span.icon {
+.gap-correctness > span.icon {
 	width: 16px;
 	height: 16px;
 	display: table-cell;
@@ -43,55 +43,55 @@
 	padding-right: 4px;
 }
 
-.gapmatchelement-inactive .gapmatchelement-correctness *,
-.gapmatchelement-inactive .gapmatchelement-rowcontrols * {
+.gap-inactive .gap-correctness *,
+.gap-inactive .gap-rowcontrols * {
 	visibility: hidden;
 }
 
-.gapmatchelement-correctness > span.label {
+.gap-correctness > span.label {
 	display: table-cell;
 	vertical-align: middle;
 }
 
-.gapmatchelement-incorrect > span.icon {
+.gap-incorrect > span.icon {
 	background-image: url(images/red_x.png);
 }
 
-.gapmatchelement-correct > span.icon {
+.gap-correct > span.icon {
 	background-image: url(images/greencheck.png);
 }
 
-.gapmatchelement-incorrect > span.label:after {
+.gap-incorrect > span.label:after {
 	content: "wrong";
 	color: red;
 }
 
-.gapmatchelement-correct > span.label:after {
+.gap-correct > span.label:after {
 	content: "correct";
 	color: green;
 }
 
-.gapmatchelement-score-table {
+.gap-score-table {
     border-collapse: collapse;
 	width:350px;
 }
 
-.gapmatchelement-score-table > thead > tr > th {
+.gap-score-table > thead > tr > th {
     font-weight: 110%;
 	height: 20px;
 	padding-left:10px;
 }
 
-.gapmatchelement-header-score {
+.gap-header-score {
 	width:68px;
 }
 
-.gapmatchelement-correct-text {
+.gap-correct-text {
 	padding: 4px 4px 4px 10px;
 	width: 100%;
 }
 
-.gapmatchelement-points {
+.gap-points {
 	border: 1px solid #aaa;
 	padding: 4px;
 	width: 68px;
@@ -99,34 +99,34 @@
     text-align:center;
 }
 
-.gapmatchelement-rowcontrols {
+.gap-rowcontrols {
 	position: absolute;
 	width: 26px;
 	height: 24px;
 	right: 0;
 }
 
-.gapmatchelement-dialog .ui-icon { /* Ouch */
+.gap-dialog .ui-icon { /* Ouch */
 	background-image: url(images/ui-icons_222222_256x240.png);
 	position: absolute;
 	width: 16px;
 	height: 16px;
 }
 
-.gapmatchelement-dialog .ui-icon:hover {
+.gap-dialog .ui-icon:hover {
 	opacity: 1
 }
 
-.gapmatchelement-dialog .ui-icon-close {
+.gap-dialog .ui-icon-close {
 	left: -2px;
 	top: -2px;
 	background-position: -80px -128px; /* Ouch */
 }
 
-.gapmatchelement-notes {
+.gap-notes {
 	margin-top:20px;
 }
-.gapmatchelement-notes > div {
+.gap-notes > div {
 	margin-top:5px;
 }
 

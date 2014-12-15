@@ -1,11 +1,11 @@
-.gapmatchelement {
+.gap {
 	padding: 2px;
 	margin: 2px;
 	border: 1px solid #ccc;
 	display: inline-block;
 }
 
-.gapmatchelement-label {
+.gap-label {
 	font-size: x-small;
 	display: inline-block;
 	position: absolute;
@@ -16,11 +16,11 @@
 	padding-left: 2px;
 }
 
-.gapmatchelement-label:after {
+.gap-label:after {
 	content: "Gap Match Element"
 }
 
-.gapmatchelement-content {
+.gap-content {
 	display: inline-block;
 	border: 1px solid #ccc;
 	margin-top: 14px;
