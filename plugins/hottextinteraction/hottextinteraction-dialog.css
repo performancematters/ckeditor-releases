@@ -1,0 +1,142 @@
+.hottextinteraction-header {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.hottextinteraction-dialog ul {
+	margin-left: 8px;
+}
+
+.hottextinteraction-dialog li {
+	width: 400px;
+	position: relative;
+	height: 26px;
+	list-style-type: none;
+}
+
+.hottextinteraction-eee {
+	color: #222;
+	background: #eee;
+	background: -ms-linear-gradient(top, #eee, #ddd);
+	background: -webkit-linear-gradient(top, #eee, #ddd);
+	background: -moz-linear-gradient(top, #eee, #ddd);
+	background: linear-gradient(top, #eee, #ddd);
+}
+
+.hottextinteraction-correctness {
+	position: absolute;
+	width: 64px;
+	height: 24px;
+	display: table;
+	border-left: 2px solid transparent;
+}
+
+.hottextinteraction-correctness > span.icon {
+	width: 16px;
+	height: 16px;
+	display: table-cell;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-position-x: 2px;
+	padding-left: 2px;
+	padding-right: 4px;
+}
+
+.hottextinteraction-inactive .hottextinteraction-correctness *,
+.hottextinteraction-inactive .hottextinteraction-rowcontrols * {
+	visibility: hidden;
+}
+
+.hottextinteraction-correctness > span.label {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.hottextinteraction-incorrect > span.icon {
+	background-image: url(images/red_x.png);
+}
+
+.hottextinteraction-correct > span.icon {
+	background-image: url(images/greencheck.png);
+}
+
+.hottextinteraction-incorrect > span.label:after {
+	content: "wrong";
+	color: red;
+}
+
+.hottextinteraction-correct > span.label:after {
+	content: "correct";
+	color: green;
+}
+
+.hottextinteraction-textinput {
+	border: 1px solid #aaa;
+	padding: 4px;
+	position: absolute;
+	left: 66px;
+	right: 30px;
+	width: 296px;
+}
+
+.hottextinteraction-rowcontrols {
+	position: absolute;
+	width: 26px;
+	height: 24px;
+	right: 0;
+}
+
+.hottextinteraction-dialog .ui-icon { /* Ouch */
+	background-image: url(images/ui-icons_222222_256x240.png);
+	position: absolute;
+	width: 16px;
+	height: 16px;
+}
+
+.hottextinteraction-dialog .ui-icon:hover {
+	opacity: 1
+}
+
+.hottextinteraction-dialog .ui-icon-close {
+	left: -2px;
+	top: -2px;
+	background-position: -80px -128px; /* Ouch */
+}
+
+.hottextinteraction-dialog .ui-icon-unlocked {
+	left: -2px;
+	bottom: 0;
+	background-position: -208px -96px; /* Ouch */
+}
+
+.hottextinteraction-dialog .ui-icon-locked {
+	left: -2px;
+	bottom: 0;
+	background-position: -192px -96px; /* Ouch */
+}
+
+.hottextinteraction-grip {
+	background-image: url(images/grip-dotted-vertical.png);
+	background-position: right;
+	background-repeat: repeat-y;
+	position: absolute;
+	width: 4px;
+	top: 0;
+	bottom: 0;
+	right: 1px;
+	opacity: 0.7;
+	cursor: move;
+}
+
+.hottextinteraction-shuffle {
+	margin-top: 12px;
+}
+
+.hottextinteraction-shuffleinput {
+	margin-right: 4px;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */

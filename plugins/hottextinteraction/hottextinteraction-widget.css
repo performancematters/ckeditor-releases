@@ -1,0 +1,33 @@
+.hottextinteraction {
+	padding: 2px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	display: inline-block;
+}
+
+.hottextinteraction-label {
+	font-size: x-small;
+	display: inline-block;
+	position: absolute;
+	color: white;
+	background-color: #0066ff;
+	left: 5px;
+	right: 5px;
+	padding-left: 2px;
+}
+
+.hottextinteraction-label:after {
+	content: "Hot Text Interaction"
+}
+
+.hottextinteraction-content {
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-top: 14px;
+	padding: 2px;
+	min-width: 120px;
+}
+
+/* Local Variables: */
+/* tab-width: 4 */
+/* End: */
