@@ -10,7 +10,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 		    '<span class="label"></span>' +
 		'</td>' +
 		'<td>' +
-		'<div class="gap-correct-text">' +
+			'<div class="gap-correct-text">' +
 		'</td>' +
 	    '</tr>';
 
@@ -30,24 +30,24 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
      */
     function addNewChoice($element, text, id, mappingFlag, score, defaultValue) {
 
-	var newChoice = $(choiceTemplate);
-	    newChoice.find('.gap-correct-text').html(text);
-	    newChoice.find('.gap-correctness').attr('data-identifier', id);
-	if (!mappingFlag) {
-	    newChoice.find('.gap-mapping').hide();
-	    newChoice.find('.gap-correctness').toggleClass('gap-correct', score);
-	    newChoice.find('.gap-correctness').toggleClass('gap-incorrect', !score);
-	} else {
-	    newChoice.find('.gap-correctness').hide();
-	    newChoice.find('.gap-points').attr('data-identifier', id);
-	    if (typeof(score) === 'string')
-		newChoice.find('.gap-points').val(score);
-	    if (defaultValue)
-	    	newChoice.find('.gap-points').attr('data-default', defaultValue);
-	}
+		var newChoice = $(choiceTemplate);
+			newChoice.find('.gap-correct-text').html(text);
+			newChoice.find('.gap-correctness').attr('data-identifier', id);
+		if (!mappingFlag) {
+			newChoice.find('.gap-mapping').hide();
+			newChoice.find('.gap-correctness').toggleClass('gap-correct', score);
+			newChoice.find('.gap-correctness').toggleClass('gap-incorrect', !score);
+		} else {
+			newChoice.find('.gap-correctness').hide();
+			newChoice.find('.gap-points').attr('data-identifier', id);
+			if (typeof(score) === 'number')
+				newChoice.find('.gap-points').val(score);
+			if (defaultValue)
+				newChoice.find('.gap-points').attr('data-default', defaultValue);
+		}
 
-	$element.find('.gap-score-table > tbody').append(newChoice);
-	return newChoice;
+		$element.find('.gap-score-table > tbody').append(newChoice);
+		return newChoice;
     }
 
     /**
@@ -59,22 +59,22 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
      * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
      */
     function getScore(widgetIdentifier, mappingFlag, scoreData, choiceIdentifier) {
-	var result = (mappingFlag) ? null : false;
-	if (scoreData != null) {
-	    for (var i=0; i<scoreData.length; ++i) {
-		var answer = scoreData[i];
-		if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) > -1)) {
-		    if (choiceIdentifier === answer.mapKey.replace(widgetIdentifier, "").trim()) {
-			return answer.mappedValue;
-		    }
-		} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) > -1)) {
-		    if (choiceIdentifier === answer.replace(widgetIdentifier, "").trim()) {
-			return true;
-		    }
+		var result = (mappingFlag) ? null : false;
+		if (scoreData != null) {
+			for (var i=0; i<scoreData.length; ++i) {
+				var answer = scoreData[i];
+				if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) > -1)) {
+					if (choiceIdentifier === answer.mapKey.replace(widgetIdentifier, "").trim()) {
+						return answer.mappedValue;
+					}
+				} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) > -1)) {
+					if (choiceIdentifier === answer.replace(widgetIdentifier, "").trim()) {
+						return true;
+					}
+				}
+			}
 		}
-	    }
-	}
-	return result;
+		return result;
     }
 
 	/**
@@ -85,18 +85,18 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
      * @return {String} score value (correctResponse is boolean value; mapping is null or integer).
      */
     function removeAllPreviousDirectedPairsForWidgetIdentifier(widgetIdentifier, mappingFlag, scoreData) {
-	var result = [];
-	if (scoreData != null) {
-	    for (var i=0; i<scoreData.length; ++i) {
-		var answer = scoreData[i];
-		if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) === -1)) {
-		    result.push(answer);
-		} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) === -1)) {
-		    result.push(answer);
+		var result = [];
+		if (scoreData != null) {
+			for (var i=0; i<scoreData.length; ++i) {
+				var answer = scoreData[i];
+				if (mappingFlag && (answer.mapKey.indexOf(widgetIdentifier) === -1)) {
+					result.push(answer);
+				} else if (!mappingFlag && (answer.indexOf(widgetIdentifier) === -1)) {
+					result.push(answer);
+				}
+			}
 		}
-	    }
-	}
-	return result;
+		return result;
     }
 
     /**
@@ -105,26 +105,26 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
      * @return {Ovject} where key is identifier and value is value.
      */
     function getChoiceObj(gapText) {
-	var result = {};
-	for (var i=0; i<gapText.length; ++i) {
-	    result[gapText[i].identifier] = gapText[i].value.trim();
-	}
-	return result;
+		var result = {};
+		for (var i=0; i<gapText.length; ++i) {
+			result[gapText[i].identifier] = gapText[i].text.trim();
+		}
+		return result;
     }
 
     function loadTabFocus(dialog, $element) {
-	var focusIndex = 0;
-	var element = dialog.getContentElement('tab-gap', 'correctAnswerControls');
+		var focusIndex = 0;
+		var element = dialog.getContentElement('tab-gap', 'correctAnswerControls');
 
-	var mapEntries = $(element.getElement().$).find('input.gap-points');
-	mapEntries.each(function () {
-		dialog.addFocusable(new CKEDITOR.dom.element($(this)[0]), focusIndex++);
-	});
+		var mapEntries = $(element.getElement().$).find('input.gap-points');
+		mapEntries.each(function () {
+			dialog.addFocusable(new CKEDITOR.dom.element($(this)[0]), focusIndex++);
+		});
 
-	$element.off('keypress', '.gap-correctness').on('keypress', '.gap-correctness', function (e) {
-	    if (e.charCode === 32)
-		$(this).click();
-	});
+		$element.off('keypress', '.gap-correctness').on('keypress', '.gap-correctness', function (e) {
+			if (e.charCode === 32)
+			$(this).click();
+		});
     }
 
     return {
@@ -138,22 +138,22 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 	    var $element = $(element.getElement().$);
 
 	    $element.off('click', '.gap-correctness').on('click', '.gap-correctness', function (e) {
-		if ($(this).closest('li').is('.gap-inactive'))
-		    return false;
+			if ($(this).closest('li').is('.gap-inactive'))
+				return false;
 
-		// If going from incorrect to correct, then move any other rows marked correct to incorrect.
-		if ($(this).is('.gap-incorrect'))
-		    $element.find('.gap-correct').toggleClass('gap-correct gap-incorrect');
-		$(this).toggleClass('gap-correct gap-incorrect');
+			// If going from incorrect to correct, then move any other rows marked correct to incorrect.
+			if ($(this).is('.gap-incorrect'))
+				$element.find('.gap-correct').toggleClass('gap-correct gap-incorrect');
+			$(this).toggleClass('gap-correct gap-incorrect');
 
-		this.focus();
+			this.focus();
 
-		return false;
+			return false;
 	    });
 
 	    $element.off('keypress', '.gap-correctness').on('keypress', '.gap-correctness', function (e) {
-		if (e.charCode === 32)
-		    $(this).click();
+			if (e.charCode === 32)
+				$(this).click();
 	    });
 	},
 
@@ -162,8 +162,8 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 	    var element = dialog.getContentElement('tab-gap', 'correctAnswerControls');
 	    var points = $(element.getElement().$).find('input.gap-points')[0];
 	    if (points) {
-		dialog._.currentFocusIndex = firstFocusIndex;
-		return points;
+			dialog._.currentFocusIndex = firstFocusIndex;
+			return points;
 	    }
 	    else return false;
 	},
@@ -247,12 +247,12 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 				// Prep for loading existing score data
 				var scoreData = null;
 				if (existingData) {
-					if (widget.data.interactionData.responseDeclaration.correctResponse) {
-						scoreData = widget.data.interactionData.responseDeclaration.correctResponse;
-					} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
-						scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
+					if (widget.data.interactionData.responseDeclaration.correctResponse && widget.data.interactionData.responseDeclaration.correctResponse.value) {
+						scoreData = widget.data.interactionData.responseDeclaration.correctResponse.value;
+						scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
+					} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
+						scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
 					}
-					scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
 				}
 
 				for (var choiceIdentifier in choiceObj) {
@@ -281,13 +281,15 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 				    if (existingData) {
 					    if (widget.data.interactionData.responseDeclaration.correctResponse) {
 						    scoreData = widget.data.interactionData.responseDeclaration.correctResponse;
-					    } else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntry) {
-						    scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntry;
+							scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
+					    } else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
+						    scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
+							scoreData = (scoreData.length > 1) ? scoreData : [scoreData];
 					    }
-					    scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
+
 				    }
 
-				    var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier' };
+				    var responseDeclaration = { identifier: 'RESPONSE', baseType: 'pair' };
 
 				    // Get the existing result, if exists, and remove an directedPair for this widgetIdentifier
 				    var widgetIdentifier = widget.data.widgetIdentifier;
@@ -299,7 +301,8 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					    $element.find('.gap-correct').each(function () {
 						    scoreResult.push($(this).attr('data-identifier') + " " + widgetIdentifier);
 					    });
-					    responseDeclaration.correctResponse = (scoreResult.length === 1) ? scoreResult[0] : scoreResult;
+					    responseDeclaration.correctResponse = {};
+					    responseDeclaration.correctResponse.value = (scoreResult.length === 1) ? scoreResult[0] : scoreResult;
 					    break;
 
 				    case 'map_response':
@@ -320,13 +323,13 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 							    }
 							    if (points != null) {
 								    var mapKey = widgetIdentifier + " " + $(this).attr('data-identifier');
-								    var mappedValue = $(this).val().trim();
+								    var mappedValue = parseInt($(this).val().trim());
 								    scoreResult.push({ mapKey: mapKey, mappedValue: mappedValue });
 							    }
 						    }
 					    });
 					    if (scoreResult.length > 0) {
-						    mapping.mapEntry = scoreResult;
+						    mapping.mapEntries = scoreResult;
 						    responseDeclaration.mapping = mapping;
 					    }
 					    break;
