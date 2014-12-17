@@ -214,56 +214,64 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 			setup: function (widget) {
 			    var $element = $('#' + this.domId);
 			    if ( widget.data.gapProps && widget.data.gapText ) {
-				var gapProps = JSON.parse(widget.data.gapProps);
-				var gapText = JSON.parse(widget.data.gapText);
-				var choiceObj = getChoiceObj(gapText);
-				var mappingFlag = (gapProps.points && gapProps.points === 'false') ? false : true;
-				var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
+					var gapProps = JSON.parse(widget.data.gapProps);
+					var gapText = JSON.parse(widget.data.gapText);
+					var choiceObj = getChoiceObj(gapText);
+					var mappingFlag = (gapProps.points && gapProps.points === 'false') ? false : true;
+					var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
 
-				// Clear choices and notes; and build a new list
-				$element.find('tbody').empty();
-				$element.find('.gap-notes').empty();
+					// Clear choices and notes; and build a new list
+					$element.find('tbody').empty();
+					$element.find('.gap-notes').empty();
 
-				// Perform a one time validation check for loading existing data.
-				var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
-							    && widget.data.interactionData.responseDeclaration)
+					// Perform a one time validation check for loading existing data.
+					var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
+									&& widget.data.interactionData.responseDeclaration)
 
-				// Set/Load the gap match element identifier
-				var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
-				widget.setData('widgetIdentifier', widgetIdentifier);
+					// Set/Load the gap match element identifier
+					var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
+					widget.setData('widgetIdentifier', widgetIdentifier);
 
-				// Map_Response addjustments
-				if (template === 'map_response') {
-					$element.find('.gap-header').html("Point Value Scoring");
+					// Map_Response addjustments
+					if (template === 'map_response') {
+						$element.find('.gap-header').html("Point Value Scoring");
 
-				if (gapProps.defaultValue)
-					$element.find('.gap-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
-				if (gapProps.lowerBound)
-					$element.find('.gap-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
-				if (gapProps.upperBound)
-					$element.find('.gap-notes').append('<div>Upper Bound: ' + gapProps.upperBound + '</div>');
-				}
-
-				// Prep for loading existing score data
-				var scoreData = null;
-				if (existingData) {
-					if (widget.data.interactionData.responseDeclaration.correctResponse && widget.data.interactionData.responseDeclaration.correctResponse.value) {
-						scoreData = widget.data.interactionData.responseDeclaration.correctResponse.value;
-						scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
-					} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
-						scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
+					if (gapProps.defaultValue)
+						$element.find('.gap-notes').append('<div>Default Value: ' + gapProps.defaultValue + '</div>');
+					if (gapProps.lowerBound)
+						$element.find('.gap-notes').append('<div>Lower Bound: ' + gapProps.lowerBound + '</div>');
+					if (gapProps.upperBound)
+						$element.find('.gap-notes').append('<div>Upper Bound: ' + gapProps.upperBound + '</div>');
 					}
+
+					// Prep for loading existing score data
+					var scoreData = null;
+					if (existingData) {
+						if (widget.data.interactionData.responseDeclaration.correctResponse && widget.data.interactionData.responseDeclaration.correctResponse.value) {
+							scoreData = widget.data.interactionData.responseDeclaration.correctResponse.value;
+							scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
+						} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
+							scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
+						}
+					}
+
+					for (var choiceIdentifier in choiceObj) {
+						// Get either the boolean/point value for existing score data, if exists.
+						var score = getScore(widgetIdentifier, (template==='map_response'), scoreData, choiceIdentifier);
+						var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
+						var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, (template==='map_response'), score, defaultValue, this.getDialog());
+					}
+
+					loadTabFocus(this.getDialog(),$element);
+			    } else {
+					// An answer choice has not been provide, show error and force cancel.
+					$element.find('.gap-header').html('<h1 style="color:red">ERROR</h1>');
+					$element.find('.gap-score-table').remove();
+					$element.find('.gap-header').append('<span style="text-align:center;color:red">At least one answer choice must be provide<br /> before adding this gap element.<br/>Please close this widget, and add an answer choice to the Gap Match Interaction.</span>');
+					// Hide the OK, button to prevent additional validation, and force a cancel.
+					$element.parents('.cke_dialog_contents').find('a[title="OK"][role="button"]').hide()
 				}
 
-				for (var choiceIdentifier in choiceObj) {
-					// Get either the boolean/point value for existing score data, if exists.
-					var score = getScore(widgetIdentifier, (template==='map_response'), scoreData, choiceIdentifier);
-					var defaultValue = (gapProps.defaultValue) ? gapProps.defaultValue : null;
-					var row = addNewChoice($element, choiceObj[choiceIdentifier], choiceIdentifier, (template==='map_response'), score, defaultValue, this.getDialog());
-				}
-
-				loadTabFocus(this.getDialog(),$element);
-			    }
 			},
 			commit: function (widget) {
 			    var $element = $('#' + this.domId);
