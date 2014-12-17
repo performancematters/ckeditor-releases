@@ -138,7 +138,7 @@ CKEDITOR.plugins.add('gap', {
 					var description;
                     var mappingFlag = (this.data.gapProps.points && this.data.gapProps.points === 'false') ? false : true;
                     var responseCount = 0;
-                    if (mappingFlag) {
+                    if (mappingFlag && this.data.interactionData.responseDeclaration.mapping) {
                         // Iterate to count answers for this particular gap Element (widgetIdentifier)
                         var mapGapElementCount = 0;
                         var mapEntries = this.data.interactionData.responseDeclaration.mapping.mapEntries;
@@ -171,7 +171,7 @@ CKEDITOR.plugins.add('gap', {
                             description = '<i>' + mapGapElementCount + ' possible answers</i>';
                             break;
                         }
-                    } else {
+                    } else if (this.data.interactionData.responseDeclaration.correctResponse) {
                         // the correctResponse is collective for all gap elements
                         // if single cardinality convert correctResponse into array,
                         // then iterate correctResponse to match on this particular gap Element identifier.

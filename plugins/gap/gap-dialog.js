@@ -291,7 +291,14 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 
 					// Perform a one time validation check for loading existing data.
 					var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
-									&& widget.data.interactionData.responseDeclaration)
+									&& widget.data.interactionData.responseDeclaration);
+
+					// If existingData, verify that response type is consistent; otherwise, do not load existing data.
+					if (existingData) {
+						if ((gapProps.points === 'false' && widget.data.interactionData.responseDeclaration.mapping)
+							|| (gapProps.points === 'true' && widget.data.interactionData.responseDeclaration.correctResponse))
+							existingData = null;
+					}
 
 					// Set/Load the gap match element identifier
 					var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
