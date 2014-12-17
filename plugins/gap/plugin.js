@@ -84,6 +84,14 @@ CKEDITOR.plugins.add('gap', {
 				if (element.attributes && 'identifier' in element.attributes)
 					data.interactionData.identifier = element.attributes['identifier'];
 
+				if (element.attributes && 'data-gaptext' in element.attributes) {
+					data.gapText = JSON.parse(element.attributes['data-gaptext']);
+				}
+
+				if (element.attributes && 'data-gapprops' in element.attributes) {
+					data.gapProps = JSON.parse(element.attributes['data-gapprops']);
+				}
+
                 var label = new CKEDITOR.htmlParser.element('span', { class: 'gap-label' });
 
                 var content = new CKEDITOR.htmlParser.element('span', { class: 'gap-content' });
@@ -106,6 +114,7 @@ CKEDITOR.plugins.add('gap', {
 				if (this.data && this.data.interactionData && 'identifier' in this.data.interactionData)
 					gap.attributes['identifier'] = JSON.stringify(this.data.interactionData.identifier);
 
+
 				return gap;
             },
 
@@ -113,14 +122,6 @@ CKEDITOR.plugins.add('gap', {
                 // Repair widget if necessary. This happens on paste, probably a widget bug.
                 if (!$(this.element.$).is(':has(.gap-label)'))
                     $(this.element.$).prepend('<span class="gap-label" />');
-
-                // retrieve data on ckeditor instance, and set as widget data.
-                var gapProps = $(this.editor.element.$).prevAll('.qti-gmie-choice-list-area').attr('data-gapProps');
-                if (gapProps)
-                    this.setData('gapProps', gapProps);
-                var gapText =$(this.editor.element.$).prevAll('.qti-gmie-choice-list-area').attr('data-gapText');
-                if (gapText)
-                    this.setData('gapText', gapText);
 
                 console.log("done init");
             },
@@ -135,9 +136,7 @@ CKEDITOR.plugins.add('gap', {
                 if (this.data && this.data.interactionData && this.data.interactionData && this.data.gapText && this.data.gapProps) {
                     var widgetIdentifier = this.data.interactionData.identifier;
 					var description;
-                    var gapPropsObj = JSON.parse(this.data.gapProps);
-                    var gapTextArray = JSON.parse(this.data.gapText);
-                    var mappingFlag = (gapPropsObj.points && gapPropsObj.points === 'false') ? false : true;
+                    var mappingFlag = (this.data.gapProps.points && this.data.gapProps.points === 'false') ? false : true;
                     var responseCount = 0;
                     if (mappingFlag) {
                         // Iterate to count answers for this particular gap Element (widgetIdentifier)
@@ -150,10 +149,10 @@ CKEDITOR.plugins.add('gap', {
                                 // Don't bother redefining a single answer, if there are multiple answers.
                                 if (mapGapElementCount === 1) {
                                     answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
-                                    for (k = 0; k < gapTextArray.length; k++) {
-                                        if (gapTextArray[k].identifier === answer) {
+                                    for (k = 0; k < this.data.gapText.length; k++) {
+                                        if (this.data.gapText[k].identifier === answer) {
                                             var value = parseInt(mapEntry.mappedValue);
-                                            description = '<i>' + gapTextArray[k].text + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
+                                            description = '<i>' + this.data.gapText[k].text + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
                                             break;
                                         }
                                     }
@@ -182,9 +181,9 @@ CKEDITOR.plugins.add('gap', {
                             var answer = answerList[i];
                             if (answer.indexOf(widgetIdentifier) > -1) {
                                 answer = answer.replace(widgetIdentifier, "").trim();
-                                for (k = 0; k < gapTextArray.length; k++) {
-                                    if (gapTextArray[k].identifier === answer) {
-                                        description = '<i>' + gapTextArray[k].text + '</i>';
+                                for (k = 0; k < this.data.gapText.length; k++) {
+                                    if (this.data.gapText[k].identifier === answer) {
+                                        description = '<i>' + this.data.gapText[k].text + '</i>';
                                         break;
                                     }
                                 }

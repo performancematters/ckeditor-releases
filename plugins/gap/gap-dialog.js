@@ -102,7 +102,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
     /**
      * Create an object of answer choices
      * @param {Array} gapText entries
-     * @return {Ovject} where key is identifier and value is value.
+     * @return {Object} where key is identifier and value is value.
      */
     function getChoiceObj(gapText) {
 		var result = {};
@@ -126,6 +126,51 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 			$(this).click();
 		});
     }
+
+    /**
+     * Create an object of gapText entries
+     */
+    function getGapText($root) {
+		var gapText = [];
+		$root.find('.qti-gmie-choice-list > .qti-gmie-outer:not(:last)').each(function () {
+			var choiceText = $(this).find('.qti-gmie-choice-text');
+			var simpleChoice = {
+				text: $(this).find('.qti-gmie-choice-text').first().html(),
+				identifier: $(this).find('.qti-gmie-identifier').val()
+			};
+			if (simpleChoice.text.length > 0)
+				gapText.push(simpleChoice);
+		});
+		return gapText;
+    }
+
+    /**
+     * Create an object of gapProps entries
+     */
+    function getGapProps($root) {
+		var gapProps = {};
+		var partialCheckBox = $('.qti-gmie-partial input', $root)[0].checked;
+		if (partialCheckBox) {
+			gapProps.points = "true";
+			var lowerBound = $('input[name="lowerBound"]', $root).val();
+			if (lowerBound != null && lowerBound != '')
+				gapProps.lowerBound = lowerBound;
+
+			var upperBound = $('input[name="upperBound"]', $root).val();
+			if (upperBound != null && upperBound != '')
+				gapProps.upperBound = upperBound;
+
+			var defaultValue = $('input[name="defaultValue"]', $root).val();
+			if (defaultValue != null && defaultValue != '')
+				gapProps.defaultValue = defaultValue;
+		}
+		else
+			gapProps.points = "false";
+
+		return gapProps;
+	}
+
+
 
     return {
 	title: 'Gap',
@@ -213,9 +258,29 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 			},
 			setup: function (widget) {
 			    var $element = $('#' + this.domId);
-			    if ( widget.data.gapProps && widget.data.gapText ) {
-					var gapProps = JSON.parse(widget.data.gapProps);
-					var gapText = JSON.parse(widget.data.gapText);
+
+			    // Pull the latest gapProps and gapText from the gapMatch interaction
+			    // each time the widget is opened.
+				$interactionRoot = $(widget.editor.element.$).closest('.qti-gmie');
+				widget.data.gapProps = getGapProps($interactionRoot);
+				widget.data.gapText = getGapText($interactionRoot);
+
+				// At least one gapText answer choice must be defined to continue
+				if (widget.data.gapText.length > 1) {
+					// Reset the dialog
+					$element.find('.gap-header').html('Correct Response');
+					$element.find('.gap-score-table').remove();
+					$element.find('.gap-notes').remove();
+					var dialogTable = '<table class="gap-score-table">' +
+				    '<thead><tr><th class="gap-header-score" style="text-align:center;padding:4px 0px;">Score</th>' +
+					'<th>Answer</th></tr></thead><tbody></tbody></table>' +
+				    '<div class="gap-notes"></div>';
+					$element.find('.gap-header').after(dialogTable);
+					// Show the OK
+					$element.parents('.cke_dialog_contents').find('a[title="OK"][role="button"]').show()
+
+					var gapProps = widget.data.gapProps;
+					var gapText = widget.data.gapText;
 					var choiceObj = getChoiceObj(gapText);
 					var mappingFlag = (gapProps.points && gapProps.points === 'false') ? false : true;
 					var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
@@ -277,8 +342,8 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 			    var $element = $('#' + this.domId);
 
 			    if ( widget.data.gapProps && widget.data.gapText ) {
-				    var gapProps = JSON.parse(widget.data.gapProps);
-				    var gapText = JSON.parse(widget.data.gapText);
+					var gapProps = widget.data.gapProps;
+					var gapText = widget.data.gapText;
 				    var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
 
 				    // Perform a one time validation check for loading existing data.
