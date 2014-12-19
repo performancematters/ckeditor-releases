@@ -114,10 +114,7 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 				if ($(this).closest('li').is('.hottextinteraction-inactive'))
 					return false;
 
-				// If going from incorrect to correct, then move any other rows marked correct to incorrect.
-				if ($(this).is('.hottextinteraction-incorrect'))
-					$element.find('.hottextinteraction-correct').toggleClass('hottextinteraction-correct hottextinteraction-incorrect');
-				$(this).toggleClass('hottextinteraction-correct hottextinteraction-incorrect');
+			    $(this).toggleClass('hottextinteraction-correct hottextinteraction-incorrect');
 
 				this.focus();
 
@@ -229,16 +226,12 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 								if (text.length > 0) {
 									var identifier = input.attr('data-identifier') || randomIdentifier();
 									var inlineChoice = { identifier: identifier, text: text };
-									if (getShuffle($element)) {
-										var fixed = $(this).find('.ui-icon-locked').length == 1;
-										if (fixed)
-											inlineChoice.fixed = true;
-									}
+									
 									choices.push(inlineChoice);
 
 									var correct = $(this).find('.hottextinteraction-correct').length == 1;
 									if (correct)
-										identifierOfCorrectResponse = input.attr('data-identifier');
+										identifierOfCorrectResponse = identifier;
 								}
 							});
 
