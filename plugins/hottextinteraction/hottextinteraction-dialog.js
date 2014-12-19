@@ -235,9 +235,9 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 								}
 							});
 
-							var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single' };
+							var responseDeclaration = { identifier: 'RESPONSE', baseType: 'identifier', cardinality: 'single', correctResponse : {} };
 							if (identifierOfCorrectResponse != null)
-								responseDeclaration.correctResponse = identifierOfCorrectResponse;
+								responseDeclaration.correctResponse.value = identifierOfCorrectResponse;
 
 							widget.setData('interactionData', {
 								responseDeclaration: responseDeclaration,

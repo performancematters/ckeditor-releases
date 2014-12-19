@@ -84,8 +84,8 @@ CKEDITOR.plugins.add('hottextinteraction', {
 
 				if (element.attributes && 'identifier' in element.attributes) 
 							choice.identifier = element.attributes.identifier;
-							
-
+				
+				
 				if (element.children.length > 0) {
 					var textElement = element.children[0];
 					if (textElement instanceof CKEDITOR.htmlParser.text)
@@ -116,8 +116,9 @@ CKEDITOR.plugins.add('hottextinteraction', {
 						var choice = choices[i];
 						var attributes = { identifier: choice.identifier };
 						if(this.data.interactionData.responseDeclaration 
-								&& this.data.interactionData.responseDeclaration.correctResponse){
-							var correctResponseVal = this.data.interactionData.responseDeclaration.correctResponse;
+								&& this.data.interactionData.responseDeclaration.correctResponse &&
+								this.data.interactionData.responseDeclaration.correctResponse.value){
+							var correctResponseVal = this.data.interactionData.responseDeclaration.correctResponse.value;
 							var temp = new Array();
 							if(!(correctResponseVal instanceof Array))
 								temp.push(correctResponseVal);
@@ -131,8 +132,9 @@ CKEDITOR.plugins.add('hottextinteraction', {
 						
 						
 						inlineChoiceElement = new CKEDITOR.htmlParser.element('hottext', attributes);
-						inlineChoiceElement.removeClass("isCorrect-true");
+						
 						inlineChoiceElement.add(new CKEDITOR.htmlParser.text(choice.text));
+						inlineChoiceElement.removeClass("isCorrect-true");
 						if(isCorrectResponse)
 							inlineChoiceElement.addClass("isCorrect-true");
 						
