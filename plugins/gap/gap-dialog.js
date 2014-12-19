@@ -235,27 +235,6 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 				    '</tbody></table>' +
 				    '<div class="gap-notes"></div>' +
 			    '</div>',
-			validate: function (widget) {
-			    var instance = $('#' + this.domId);
-			    var template = (instance.find('.gap-header').text() === 'Correct Response') ? 'match_correct' : 'map_response';
-			    switch (template) {
-			    case 'match_correct':
-				var correctAnswer = instance.find('.gap-correct');
-				return CKEDITOR.dialog.validate.notEmpty("A correct answer is required.")(correctAnswer.toArray());
-
-			    case 'map_response':
-				var points = instance.find('.gap-points').map(function(){
-				    if ($(this).val().trim())
-					if ($(this).attr('data-default') && ($(this).val().trim() != $(this).attr('data-default')))
-					    return $(this).val();
-					else if (!$(this).attr('data-default')) return $(this).val();
-				}).toArray();
-				return CKEDITOR.dialog.validate.notEmpty("A point value is required for at least one answer choice.")(points);
-
-			    default:
-				    throw new Error("Unimplemented");
-			    }
-			},
 			setup: function (widget) {
 			    var $element = $('#' + this.domId);
 
@@ -266,7 +245,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 				widget.data.gapText = getGapText($interactionRoot);
 
 				// At least one gapText answer choice must be defined to continue
-				if (widget.data.gapText.length > 1) {
+				if (widget.data.gapText.length > 0) {
 					// Reset the dialog
 					$element.find('.gap-header').html('Correct Response');
 					$element.find('.gap-score-table').remove();
@@ -290,19 +269,18 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					$element.find('.gap-notes').empty();
 
 					// Perform a one time validation check for loading existing data.
-					var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
-									&& widget.data.interactionData.responseDeclaration);
+					var existingData = (widget.data && widget.data.identifier && widget.data.answer);
 
 					// If existingData, verify that response type is consistent; otherwise, do not load existing data.
 					if (existingData) {
-						if ((gapProps.points === 'false' && widget.data.interactionData.responseDeclaration.mapping)
-							|| (gapProps.points === 'true' && widget.data.interactionData.responseDeclaration.correctResponse))
+						if ((gapProps.points === 'false' && widget.data.answer.mapEntries)
+							|| (gapProps.points === 'true' && widget.data.answer.correctResponse))
 							existingData = null;
 					}
 
 					// Set/Load the gap match element identifier
-					var widgetIdentifier = (existingData) ? widget.data.interactionData.identifier : randomIdentifier();
-					widget.setData('widgetIdentifier', widgetIdentifier);
+					var widgetIdentifier = (existingData) ? widget.data.identifier : randomIdentifier();
+					widget.setData('identifier', widgetIdentifier);
 
 					// Map_Response addjustments
 					if (template === 'map_response') {
@@ -319,11 +297,11 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					// Prep for loading existing score data
 					var scoreData = null;
 					if (existingData) {
-						if (widget.data.interactionData.responseDeclaration.correctResponse && widget.data.interactionData.responseDeclaration.correctResponse.value) {
-							scoreData = widget.data.interactionData.responseDeclaration.correctResponse.value;
+						if (widget.data.answer.correctResponse && widget.data.answer.correctResponse.value) {
+							scoreData = widget.data.answer.correctResponse.value;
 							scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
-						} else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
-							scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
+						} else if (widget.data.answer.mapEntries) {
+							scoreData = widget.data.answer.mapEntries;
 						}
 					}
 
@@ -337,9 +315,9 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					loadTabFocus(this.getDialog(),$element);
 			    } else {
 					// An answer choice has not been provide, show error and force cancel.
-					$element.find('.gap-header').html('<h1 style="color:red">ERROR</h1>');
+					$element.find('.gap-header').html('<h1>No Answer Choices Available</h1>');
 					$element.find('.gap-score-table').remove();
-					$element.find('.gap-header').append('<span style="text-align:center;color:red">At least one answer choice must be provide<br /> before adding this gap element.<br/>Please close this widget, and add an answer choice to the Gap Match Interaction.</span>');
+					$element.find('.gap-header').append('<span>Please close this dialog window and add answer choices before continuing.</span>');
 					// Hide the OK, button to prevent additional validation, and force a cancel.
 					$element.parents('.cke_dialog_contents').find('a[title="OK"][role="button"]').hide()
 				}
@@ -352,27 +330,25 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					var gapProps = widget.data.gapProps;
 					var gapText = widget.data.gapText;
 				    var template = (gapProps.points && gapProps.points === 'false') ? 'match_correct' : 'map_response';
+				    var answer = {};
 
 				    // Perform a one time validation check for loading existing data.
-				    var existingData = (widget.data && widget.data.interactionData && widget.data.interactionData.identifier
-									    && widget.data.interactionData.responseDeclaration);
+				    var existingData = (widget.data && widget.data.identifier && widget.data.answer);
 				    // Prep for loading existing score data
 				    var scoreData = null;
 				    if (existingData) {
-					    if (widget.data.interactionData.responseDeclaration.correctResponse) {
-						    scoreData = widget.data.interactionData.responseDeclaration.correctResponse;
+					    if (widget.data.answer.correctResponse) {
+						    scoreData = widget.data.answer.correctResponse;
 							scoreData = (typeof(scoreData) === 'string') ? [scoreData] : scoreData;
-					    } else if (widget.data.interactionData.responseDeclaration.mapping && widget.data.interactionData.responseDeclaration.mapping.mapEntries) {
-						    scoreData = widget.data.interactionData.responseDeclaration.mapping.mapEntries;
+					    } else if (widget.data.answer.mapEntries) {
+						    scoreData = widget.data.answer.mapEntries;
 							scoreData = (scoreData.length > 1) ? scoreData : [scoreData];
 					    }
 
 				    }
 
-				    var responseDeclaration = { identifier: 'RESPONSE', baseType: 'pair' };
-
 				    // Get the existing result, if exists, and remove an directedPair for this widgetIdentifier
-				    var widgetIdentifier = widget.data.widgetIdentifier;
+				    var widgetIdentifier = widget.data.identifier;
 				    var scoreResult = [];
 
 				    // Retrieve the score for this widgetIdentifier, and add it to the scoreResult
@@ -381,18 +357,11 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					    $element.find('.gap-correct').each(function () {
 						    scoreResult.push($(this).attr('data-identifier') + " " + widgetIdentifier);
 					    });
-					    responseDeclaration.correctResponse = {};
-					    responseDeclaration.correctResponse.value = (scoreResult.length === 1) ? scoreResult[0] : scoreResult;
+					    answer.correctResponse = {};
+					    answer.correctResponse.value = (scoreResult.length === 1) ? scoreResult[0] : scoreResult;
 					    break;
 
 				    case 'map_response':
-					    var mapping = {};
-					    if (gapProps.defaultValue)
-						    mapping.defaultValue = gapProps.defaultValue;
-					    if (gapProps.lowerBound)
-						    mapping.lowerBound = gapProps.lowerBound;
-					    if (gapProps.upperBound)
-						    mapping.upperBound = gapProps.upperBound;
 					    $element.find('.gap-points').each(function () {
 						    var points = ($(this).val().trim().length > 0) ? parseInt($(this).val()) : null;
 						    if (typeof(points) === 'number') {
@@ -409,8 +378,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 						    }
 					    });
 					    if (scoreResult.length > 0) {
-						    mapping.mapEntries = scoreResult;
-						    responseDeclaration.mapping = mapping;
+						    answer.mapEntries = scoreResult;
 					    }
 					    break;
 
@@ -418,13 +386,8 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					    throw new Error("Unimplemented");
 				    }
 
-				    // This is not the final cardinality result, since all the gap selectors are cumulative.
-				    responseDeclaration.cardinality = (scoreResult.length > 1) ? 'multiple' : 'single';
-
-				    widget.setData('interactionData', {
-					    identifier: widgetIdentifier,
-					    responseDeclaration: responseDeclaration
-				    });
+				    widget.setData('identifier', widgetIdentifier);
+					widget.setData('answer', answer);
 			    }
 			}
 		    }

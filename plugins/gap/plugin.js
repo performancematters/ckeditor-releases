@@ -75,14 +75,17 @@ CKEDITOR.plugins.add('gap', {
                 if (element.name != 'gap')
                     return false;
 
-				data.interactionData = {};
+				data.answer = {};
 
-				if (element.attributes && 'data-responsedeclaration' in element.attributes) {
-					data.interactionData.responseDeclaration = JSON.parse(element.attributes['data-responsedeclaration']);
+				if (element.attributes && 'data-mapentries' in element.attributes) {
+					data.answer.mapEntries = JSON.parse(element.attributes['data-mapentries']);
+				}
+				if (element.attributes && 'data-correctresponse' in element.attributes) {
+					data.answer.correctResponse = JSON.parse(element.attributes['data-correctresponse']);
 				}
 
 				if (element.attributes && 'identifier' in element.attributes)
-					data.interactionData.identifier = element.attributes['identifier'];
+					data.identifier = element.attributes['identifier'];
 
 				if (element.attributes && 'data-gaptext' in element.attributes) {
 					data.gapText = JSON.parse(element.attributes['data-gaptext']);
@@ -108,11 +111,11 @@ CKEDITOR.plugins.add('gap', {
             downcast: function (element) {
 				var gap = new CKEDITOR.htmlParser.element('gap');
 
-				if (this.data && this.data.interactionData && this.data.interactionData.responseDeclaration)
-					gap.attributes['data-responsedeclaration'] = JSON.stringify(this.data.interactionData.responseDeclaration);
+				if (this.data && this.data.answer)
+					gap.attributes['data-answer'] = JSON.stringify(this.data.answer);
 
-				if (this.data && this.data.interactionData && 'identifier' in this.data.interactionData)
-					gap.attributes['identifier'] = JSON.stringify(this.data.interactionData.identifier);
+				if (this.data && 'identifier' in this.data)
+					gap.attributes['identifier'] = JSON.stringify(this.data.identifier);
 
 
 				return gap;
@@ -122,8 +125,6 @@ CKEDITOR.plugins.add('gap', {
                 // Repair widget if necessary. This happens on paste, probably a widget bug.
                 if (!$(this.element.$).is(':has(.gap-label)'))
                     $(this.element.$).prepend('<span class="gap-label" />');
-
-                console.log("done init");
             },
 
             // Listen on the widget#data event which is fired
@@ -133,15 +134,15 @@ CKEDITOR.plugins.add('gap', {
             // window.
             data: function () {
                 var content = $(this.element.$).find('> .gap-content');
-                if (this.data && this.data.interactionData && this.data.interactionData && this.data.gapText && this.data.gapProps) {
-                    var widgetIdentifier = this.data.interactionData.identifier;
+                if (this.data && this.data.identifier && this.data.answer && this.data.gapText && this.data.gapProps) {
+                    var widgetIdentifier = this.data.identifier;
 					var description;
                     var mappingFlag = (this.data.gapProps.points && this.data.gapProps.points === 'false') ? false : true;
                     var responseCount = 0;
-                    if (mappingFlag && this.data.interactionData.responseDeclaration.mapping) {
+                    if (mappingFlag && this.data.answer.mapEntries) {
                         // Iterate to count answers for this particular gap Element (widgetIdentifier)
                         var mapGapElementCount = 0;
-                        var mapEntries = this.data.interactionData.responseDeclaration.mapping.mapEntries;
+                        var mapEntries = this.data.answer.mapEntries;
                         for (i = 0; i < mapEntries.length; i++) {
                             var mapEntry = mapEntries[i];
                             if (mapEntry.mapKey.indexOf(widgetIdentifier) > -1) {
@@ -171,11 +172,11 @@ CKEDITOR.plugins.add('gap', {
                             description = '<i>' + mapGapElementCount + ' possible answers</i>';
                             break;
                         }
-                    } else if (this.data.interactionData.responseDeclaration.correctResponse) {
+                    } else if (this.data.answer.correctResponse) {
                         // the correctResponse is collective for all gap elements
                         // if single cardinality convert correctResponse into array,
                         // then iterate correctResponse to match on this particular gap Element identifier.
-                        var correctResponse = this.data.interactionData.responseDeclaration.correctResponse.value;
+                        var correctResponse = this.data.answer.correctResponse.value;
                         var answerList = (typeof correctResponse === 'string') ? [correctResponse] : correctResponse;
                         for (i = 0; i < answerList.length; i++) {
                             var answer = answerList[i];
