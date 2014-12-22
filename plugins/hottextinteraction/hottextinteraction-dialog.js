@@ -179,11 +179,13 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 						setup: function (widget) {
 							var $element = $('#' + this.domId);
 
+							/*
 							if (widget.data.interactionData && 'shuffle' in widget.data.interactionData) {
 								var shuffle = widget.data.interactionData.shuffle;
 								setShuffle($element, shuffle);
 								showHideLocks($element, shuffle);
 							}
+							*/
 
 							// Clear choices and build a new list
 							$element.find('ul').empty();
@@ -192,8 +194,12 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 								var choices = widget.data.interactionData.choices;
 
 								var identifierOfCorrectResponse = null;
-								if (widget.data.interactionData.responseDeclaration && widget.data.interactionData.responseDeclaration.correctResponse)
-									identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse;
+								if (widget.data.interactionData.responseDeclaration 
+										&& widget.data.interactionData.responseDeclaration.correctResponse
+										&& widget.data.interactionData.responseDeclaration.correctResponse.value){
+									identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse.value;
+								}
+									
 
 								for (var i=0; i<1; ++i) {
 									var row = addNewChoice($element, true);
@@ -201,9 +207,8 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 									input.val(choices[i].text.trim());
 									input.attr('data-identifier', choices[i].identifier);
 									if (choices[i].identifier == identifierOfCorrectResponse)
-										row.find('.hottextinteraction-correctness').toggleClass('hottextinteraction-correct hottextinteraction-incorrect');
-									if (choices[i].fixed)
-										row.find('.hottextinteraction-fixed').toggleClass('ui-icon-locked ui-icon-unlocked');
+										row.find('.hottextinteraction-correctness').addClass('hottextinteraction-correct').removeClass('hottextinteraction-incorrect');
+									
 								}
 								//addNewChoice($element, false);
 							}
