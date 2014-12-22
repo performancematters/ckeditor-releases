@@ -197,7 +197,14 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 								if (widget.data.interactionData.responseDeclaration 
 										&& widget.data.interactionData.responseDeclaration.correctResponse
 										&& widget.data.interactionData.responseDeclaration.correctResponse.value){
-									identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse.value;
+									
+									if(widget.data.interactionData.responseDeclaration.correctResponse.value instanceof Array)
+										identifierOfCorrectResponse = widget.data.interactionData.responseDeclaration.correctResponse.value;
+									else{
+										identifierOfCorrectResponse = [];
+										identifierOfCorrectResponse.push(widget.data.interactionData.responseDeclaration.correctResponse.value);
+									}
+										
 								}
 									
 
@@ -206,8 +213,9 @@ CKEDITOR.dialog.add('hottextinteraction-dialog', function (editor) {
 									var input = row.find('.hottextinteraction-textinput');
 									input.val(choices[i].text.trim());
 									input.attr('data-identifier', choices[i].identifier);
-									if (choices[i].identifier == identifierOfCorrectResponse)
-										row.find('.hottextinteraction-correctness').addClass('hottextinteraction-correct').removeClass('hottextinteraction-incorrect');
+									for(var y =0 ; y < identifierOfCorrectResponse.length ; y++)
+										if (choices[i].identifier == identifierOfCorrectResponse[y])
+											row.find('.hottextinteraction-correctness').addClass('hottextinteraction-correct').removeClass('hottextinteraction-incorrect');
 									
 								}
 								//addNewChoice($element, false);
