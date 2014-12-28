@@ -133,10 +133,10 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
     function getGapText($root) {
 		var gapText = [];
 		$root.find('.qti-gmie-choice-list > .qti-gmie-outer:not(:last)').each(function () {
-			var choiceText = $(this).find('.qti-gmie-choice-text');
+			var choiceText = $(this).find('.qti-gmie-choice-val');
 			var simpleChoice = {
-				text: $(this).find('.qti-gmie-choice-text').first().html(),
-				identifier: $(this).find('.qti-gmie-identifier').val()
+				text: choiceText.val(),
+				identifier: choiceText.attr('data-identifier')
 			};
 			if (simpleChoice.text.length > 0)
 				gapText.push(simpleChoice);

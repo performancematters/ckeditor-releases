@@ -115,7 +115,7 @@ CKEDITOR.plugins.add('gap', {
 					gap.attributes['data-answer'] = JSON.stringify(this.data.answer);
 
 				if (this.data && 'identifier' in this.data)
-					gap.attributes['identifier'] = JSON.stringify(this.data.identifier);
+					gap.attributes['identifier'] = this.data.identifier;
 
 
 				return gap;
