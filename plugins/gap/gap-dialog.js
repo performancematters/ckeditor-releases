@@ -251,11 +251,11 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					if (nonNumericPoints.length > 0)
 						return CKEDITOR.dialog.validate.notEmpty(nonNumericPoints.toString() + " must be a numeric type.")([]);
 					var points = instance.find('.gap-points').map(function(){
-						if ($(this).val().trim()) {
-							if ($(this).attr('data-default') && ($(this).val().trim() != $(this).attr('data-default')))
+						if ($(this).val().trim() && $(this).attr('data-default')) {
+							if ($(this).val().trim() != $(this).attr('data-default'))
 								return $(this).val();
 						}
-						else if (!$(this).attr('data-default')) return $(this).val();
+						else if (!$(this).attr('data-default') && $(this).val()) return $(this).val();
 					}).toArray();
 					return CKEDITOR.dialog.validate.notEmpty("A point value is required for at least one answer choice.")(points);
 
