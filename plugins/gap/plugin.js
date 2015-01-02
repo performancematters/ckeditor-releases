@@ -95,6 +95,10 @@ CKEDITOR.plugins.add('gap', {
 					data.gapProps = JSON.parse(element.attributes['data-gapprops']);
 				}
 
+				if (element.attributes && 'data-answer' in element.attributes) {
+					data.answer = JSON.parse(element.attributes['data-answer']);
+				}
+
                 var label = new CKEDITOR.htmlParser.element('span', { class: 'gap-label' });
 
                 var content = new CKEDITOR.htmlParser.element('span', { class: 'gap-content' });
@@ -136,7 +140,7 @@ CKEDITOR.plugins.add('gap', {
                 var content = $(this.element.$).find('> .gap-content');
                 if (this.data && this.data.identifier && this.data.answer && this.data.gapText && this.data.gapProps) {
                     var widgetIdentifier = this.data.identifier;
-					var description;
+					var description = '<i>No answers</i>';
                     var mappingFlag = (this.data.gapProps.points && this.data.gapProps.points === 'false') ? false : true;
                     var responseCount = 0;
                     if (mappingFlag && this.data.answer.mapEntries) {
@@ -172,24 +176,28 @@ CKEDITOR.plugins.add('gap', {
                             description = '<i>' + mapGapElementCount + ' possible answers</i>';
                             break;
                         }
-                    } else if (this.data.answer.correctResponse) {
+                    } else if (this.data.answer.correctResponse && this.data.answer.correctResponse.value) {
                         // the correctResponse is collective for all gap elements
                         // if single cardinality convert correctResponse into array,
                         // then iterate correctResponse to match on this particular gap Element identifier.
                         var correctResponse = this.data.answer.correctResponse.value;
                         var answerList = (typeof correctResponse === 'string') ? [correctResponse] : correctResponse;
+                        var answerCount = 0;
                         for (i = 0; i < answerList.length; i++) {
                             var answer = answerList[i];
                             if (answer.indexOf(widgetIdentifier) > -1) {
                                 answer = answer.replace(widgetIdentifier, "").trim();
                                 for (k = 0; k < this.data.gapText.length; k++) {
                                     if (this.data.gapText[k].identifier === answer) {
+										answerCount++;
                                         description = '<i>' + this.data.gapText[k].text + '</i>';
                                         break;
                                     }
                                 }
                             }
                         }
+                        if (answerCount > 1)
+                        	description = '<i>' + answerCount + ' possible answers</i>';
                     }
 					content.html(description);
                 }

@@ -239,10 +239,12 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 			    var instance = $('#' + this.domId);
 			    var template = (instance.find('.gap-header').text() === 'Correct Response') ? 'match_correct' : 'map_response';
 			    switch (template) {
+					/*
 			    case 'match_correct':
 					var correctAnswer = instance.find('.gap-correct');
 					return CKEDITOR.dialog.validate.notEmpty("A correct answer is required.")(correctAnswer.toArray());
-
+					break;
+				*/
 			    case 'map_response':
 					var nonNumericPoints = instance.find('.gap-points').map(function(){
 						if ($(this).val().trim().length > 0 && !( /^\-?(0|[1-9]\d*)$/.test($(this).val()) ))
@@ -250,6 +252,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 					}).toArray();
 					if (nonNumericPoints.length > 0)
 						return CKEDITOR.dialog.validate.notEmpty(nonNumericPoints.toString() + " must be a numeric type.")([]);
+						/*
 					var points = instance.find('.gap-points').map(function(){
 						if ($(this).val().trim() && $(this).attr('data-default')) {
 							if ($(this).val().trim() != $(this).attr('data-default'))
@@ -258,9 +261,11 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 						else if (!$(this).attr('data-default') && $(this).val()) return $(this).val();
 					}).toArray();
 					return CKEDITOR.dialog.validate.notEmpty("A point value is required for at least one answer choice.")(points);
-
+					*/
+					/*
 			    default:
 				    throw new Error("Unimplemented");
+				    * */
 			    }
 			},
 			setup: function (widget) {
