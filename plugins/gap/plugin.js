@@ -145,36 +145,19 @@ CKEDITOR.plugins.add('gap', {
                     var responseCount = 0;
                     if (mappingFlag && this.data.answer.mapEntries) {
                         // Iterate to count answers for this particular gap Element (widgetIdentifier)
-                        var mapGapElementCount = 0;
                         var mapEntries = this.data.answer.mapEntries;
                         for (i = 0; i < mapEntries.length; i++) {
                             var mapEntry = mapEntries[i];
                             if (mapEntry.mapKey.indexOf(widgetIdentifier) > -1) {
-                                mapGapElementCount++;
-                                // Don't bother redefining a single answer, if there are multiple answers.
-                                if (mapGapElementCount === 1) {
-                                    answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
-                                    for (k = 0; k < this.data.gapText.length; k++) {
-                                        if (this.data.gapText[k].identifier === answer) {
-                                            var value = parseInt(mapEntry.mappedValue);
-                                            description = '<i>' + this.data.gapText[k].text + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
-                                            break;
-                                        }
-                                    }
-                                }
+                                answer = mapEntry.mapKey.replace(widgetIdentifier, "").trim();
+								for (k = 0; k < this.data.gapText.length; k++) {
+									if (this.data.gapText[k].identifier === answer) {
+										var value = parseInt(mapEntry.mappedValue);
+										description = '<i>' + this.data.gapText[k].text + " (" + value + "pt" + ((value > 1) ? "s" : "") + ')</i>';
+										break;
+									}
+								}
                             }
-                        }
-
-                        switch (mapGapElementCount) {
-                        case 0:
-                            description = '<i>No answers</i>';
-                            break;
-                        case 1:
-                            // This has already been defined with answer text and point value
-                            break;
-                        default:
-                            description = '<i>' + mapGapElementCount + ' possible answers</i>';
-                            break;
                         }
                     } else if (this.data.answer.correctResponse && this.data.answer.correctResponse.value) {
                         // the correctResponse is collective for all gap elements
@@ -182,22 +165,18 @@ CKEDITOR.plugins.add('gap', {
                         // then iterate correctResponse to match on this particular gap Element identifier.
                         var correctResponse = this.data.answer.correctResponse.value;
                         var answerList = (typeof correctResponse === 'string') ? [correctResponse] : correctResponse;
-                        var answerCount = 0;
                         for (i = 0; i < answerList.length; i++) {
                             var answer = answerList[i];
                             if (answer.indexOf(widgetIdentifier) > -1) {
                                 answer = answer.replace(widgetIdentifier, "").trim();
                                 for (k = 0; k < this.data.gapText.length; k++) {
                                     if (this.data.gapText[k].identifier === answer) {
-										answerCount++;
                                         description = '<i>' + this.data.gapText[k].text + '</i>';
                                         break;
                                     }
                                 }
                             }
                         }
-                        if (answerCount > 1)
-                        	description = '<i>' + answerCount + ' possible answers</i>';
                     }
 					content.html(description);
                 }

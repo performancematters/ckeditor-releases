@@ -44,6 +44,11 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 				newChoice.find('.gap-points').val(score);
 			if (defaultValue)
 				newChoice.find('.gap-points').attr('data-default', defaultValue);
+			newChoice.on('keyup', function () {
+				$(this).parents('.gap-score-table').find('.gap-points[data-identifier!="' + $(this).find('.gap-points').attr('data-identifier') + '"]').each(function () {
+					$(this).val("");
+				});
+			});
 		}
 
 		$element.find('.gap-score-table > tbody').append(newChoice);
