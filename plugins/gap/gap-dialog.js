@@ -409,7 +409,7 @@ CKEDITOR.dialog.add('gap-dialog', function (editor) {
 								    points = null;
 							    }
 							    if (points != null) {
-								    var mapKey = widgetIdentifier + " " + $(this).attr('data-identifier');
+								    var mapKey =  $(this).attr('data-identifier') + " " + widgetIdentifier;
 								    var mappedValue = parseInt($(this).val().trim());
 								    scoreResult.push({ mapKey: mapKey, mappedValue: mappedValue });
 							    }
