@@ -89,8 +89,8 @@ CKEDITOR.plugins.add('inlinechoiceinteraction', {
 						var choice = { text: '' };
 
 						if (childElement.attributes) {
-							if ('identifier' in childElement.attributes)
-								choice.identifier = childElement.attributes.identifier;
+							if ('data-identifier' in childElement.attributes)
+								choice.identifier = childElement.attributes['data-identifier'];
 							if ('fixed' in childElement.attributes)
 								choice.fixed = childElement.attributes.fixed;
 						}
