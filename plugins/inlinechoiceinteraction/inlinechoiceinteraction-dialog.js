@@ -240,7 +240,7 @@ CKEDITOR.dialog.add('inlinechoiceinteraction-dialog', function (editor) {
 
 									var correct = $(this).find('.inlinechoiceinteraction-correct').length == 1;
 									if (correct)
-										identifierOfCorrectResponse = input.attr('data-identifier');
+										identifierOfCorrectResponse = inlineChoice.identifier;
 								}
 							});
 
